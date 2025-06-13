@@ -1,18 +1,18 @@
 # Turborepo starter
 
-This is a community-maintained example. If you experience a problem, please submit a pull request with a fix. GitHub Issues will be closed.
+This Turborepo starter is maintained by the Turborepo core team.
 
 ## Using this example
 
 Run the following command:
 
 ```sh
-npx create-turbo@latest -e with-npm
+npx create-turbo@latest
 ```
 
 ## What's inside?
 
-This Turborepo uses [npm](https://www.npmjs.com/) as a packages manager. It includes the following packages/apps:
+This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
@@ -38,7 +38,7 @@ To build all apps and packages, run the following command:
 
 ```
 cd my-turborepo
-npm run build
+pnpm build
 ```
 
 ### Develop
@@ -47,7 +47,7 @@ To develop all apps and packages, run the following command:
 
 ```
 cd my-turborepo
-npm run dev
+pnpm dev
 ```
 
 ### Remote Caching
