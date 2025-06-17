@@ -13,6 +13,7 @@
   "dependencies": {
     "@repo/ui": "*",
     "@stackframe/stack": "^2.8.12",
+    "@tabler/icons-react": "^3.34.0",
     "@tailwindcss/postcss": "^4.1.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
