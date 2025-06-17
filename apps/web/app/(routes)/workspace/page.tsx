@@ -1,4 +1,5 @@
 import Heading from "./components/Heading";
+import RecentDesigns from "./components/RecentDesigns";
 import SearchBox from "./components/SearchBox";
 import SizeOptions from "./components/SizeOptions";
 
@@ -8,6 +9,7 @@ const Workspace = () => {
             <Heading />
             <SearchBox />
             <SizeOptions />
+            <RecentDesigns />
         </div>
     );
 };
