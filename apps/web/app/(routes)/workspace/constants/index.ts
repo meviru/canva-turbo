@@ -1,12 +1,22 @@
 import {
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconBrandLinkedin,
+  IconBrandPinterestFilled,
+  IconBrandTiktok,
+  IconBrandX,
+  IconBrandYoutubeFilled,
   IconCreditCard,
   IconCreditCardFilled,
+  IconFileFilled,
   IconFolder,
   IconFolderFilled,
+  IconFrame,
   IconHome,
   IconHomeFilled,
   IconLayout2,
   IconLayout2Filled,
+  IconPresentationFilled,
 } from "@tabler/icons-react";
 
 export const workspaceMenuItems = [
@@ -33,5 +43,90 @@ export const workspaceMenuItems = [
     icon: IconCreditCard,
     iconFilled: IconCreditCardFilled,
     path: "/workspace/billing",
+  },
+];
+
+export const canvasSizeOptions = [
+  {
+    name: "Instagram Post",
+    width: 500,
+    height: 500,
+    icon: IconBrandInstagram,
+    background: "#ff339c",
+  },
+  {
+    name: "Instagram Story",
+    width: 1080,
+    height: 1920,
+    icon: IconBrandInstagram,
+    background: "#ff339c",
+  },
+  {
+    name: "YouTube Thumbnail",
+    width: 1280,
+    height: 720,
+    icon: IconBrandYoutubeFilled,
+    background: "#ff3b4b",
+  },
+  {
+    name: "YouTube Banner",
+    width: 2560,
+    height: 1440,
+    icon: IconBrandYoutubeFilled,
+    background: "#ff3b4b",
+  },
+  {
+    name: "TikTok Video",
+    width: 1080,
+    height: 1920,
+    icon: IconBrandTiktok,
+    background: "#000",
+  },
+  {
+    name: "Presentation",
+    width: 1920,
+    height: 1080,
+    icon: IconPresentationFilled,
+    background: "#ff6105",
+  },
+  {
+    name: "Flyer (A4)",
+    width: 2480,
+    height: 3508,
+    icon: IconFileFilled,
+    background: "#0ba84a",
+  },
+  {
+    name: "Facebook Post",
+    width: 940,
+    height: 788,
+    icon: IconBrandFacebook,
+    background: "#4a53fa",
+  },
+  {
+    name: "Twitter Post",
+    width: 1600,
+    height: 900,
+    icon: IconBrandX,
+    background: "#000000",
+  },
+  {
+    name: "LinkedIn Cover Photo",
+    width: 1584,
+    height: 396,
+    icon: IconBrandLinkedin,
+    background: "#138eff",
+  },
+  {
+    name: "Pinterest Pin",
+    width: 1000,
+    height: 1500,
+    icon: IconBrandPinterestFilled,
+    background: "#E60023",
+  },
+  {
+    name: "Custom Size",
+    icon: IconFrame,
+    background: "#f2f3f5",
   },
 ];
