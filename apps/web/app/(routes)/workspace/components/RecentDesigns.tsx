@@ -21,8 +21,8 @@ const RecentDesigns = () => {
                         height={150}
                     />
                     <h2 className="text-xl font-semibold mt-4">No designs found</h2>
-                    <p className="text-center mt-1 mb-5">
-                        You don't have any designs created.
+                    <p className="text-center mt-2 mb-5">
+                        You haven't created any designs yet. <br />Start a new project to begin crafting your ideas.
                     </p>
                 </div>
             ) : (
