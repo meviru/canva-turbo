@@ -1,7 +1,7 @@
 import {
   IconBrandFacebook,
-  IconBrandInstagram,
-  IconBrandLinkedin,
+  IconBrandInstagramFilled,
+  IconBrandLinkedinFilled,
   IconBrandPinterestFilled,
   IconBrandTiktok,
   IconBrandX,
@@ -11,12 +11,13 @@ import {
   IconFileFilled,
   IconFolder,
   IconFolderFilled,
-  IconFrame,
   IconHome,
   IconHomeFilled,
   IconLayout2,
   IconLayout2Filled,
+  IconPhotoFilled,
   IconPresentationFilled,
+  IconSortDescendingShapesFilled
 } from "@tabler/icons-react";
 
 export const workspaceMenuItems = [
@@ -48,32 +49,43 @@ export const workspaceMenuItems = [
 
 export const canvasSizeOptions = [
   {
-    name: "Instagram Post",
+    name: "Logo",
     width: 500,
     height: 500,
-    icon: IconBrandInstagram,
-    background: "#ff339c",
-  },
-  {
-    name: "Instagram Story",
-    width: 1080,
-    height: 1920,
-    icon: IconBrandInstagram,
-    background: "#ff339c",
+    icon: IconSortDescendingShapesFilled,
+    color: "#6453d0",
+    background: "#f2f3f5",
   },
   {
     name: "YouTube Thumbnail",
     width: 1280,
     height: 720,
     icon: IconBrandYoutubeFilled,
-    background: "#ff3b4b",
+    color: "#e950f7",
+    background: "#f2f3f5",
   },
   {
     name: "YouTube Banner",
     width: 2560,
     height: 1440,
     icon: IconBrandYoutubeFilled,
-    background: "#ff3b4b",
+    color: "#ff3b4b",
+    background: "#f2f3f5",
+  },
+  {
+    name: "Instagram Post",
+    width: 500,
+    height: 500,
+    icon: IconBrandInstagramFilled,
+    color: "#ff339c",
+    background: "#f2f3f5",
+  },
+  {
+    name: "Photo Editor",
+    width: 1080,
+    height: 1920,
+    icon: IconPhotoFilled,
+    background: "#4a53fa",
   },
   {
     name: "TikTok Video",
@@ -114,7 +126,7 @@ export const canvasSizeOptions = [
     name: "LinkedIn Cover Photo",
     width: 1584,
     height: 396,
-    icon: IconBrandLinkedin,
+    icon: IconBrandLinkedinFilled,
     background: "#138eff",
   },
   {
@@ -123,10 +135,5 @@ export const canvasSizeOptions = [
     height: 1500,
     icon: IconBrandPinterestFilled,
     background: "#E60023",
-  },
-  {
-    name: "Custom Size",
-    icon: IconFrame,
-    background: "#f2f3f5",
   },
 ];
