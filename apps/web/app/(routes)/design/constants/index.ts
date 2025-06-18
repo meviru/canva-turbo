@@ -1,9 +1,16 @@
+import { Separator } from "@/components/ui/separator";
 import {
   IconBackground,
   IconClipboardTypography,
   IconClipboardTypographyFilled,
   IconCloud,
+  IconCloudCheck,
   IconCloudUpload,
+  IconDownload,
+  IconEye,
+  IconFrame,
+  IconMessage,
+  IconPencil,
   IconPhoto,
   IconPhotoFilled,
   IconSettings,
@@ -13,7 +20,61 @@ import {
   IconSparkles,
   IconTable,
   IconTableFilled,
+  IconTrash,
 } from "@tabler/icons-react";
+
+export const fileMenuItems = [
+  {
+    name: "Create new design",
+    icon: IconFrame,
+    shortcut: "Ctrl+N",
+  },
+  {
+    name: "Upload files",
+    icon: IconCloudUpload,
+  },
+  {
+    component: Separator,
+  },
+  {
+    name: "Settings",
+    icon: IconSettings,
+  },
+  {
+    component: Separator,
+  },
+  {
+    name: "Save",
+    icon: IconCloudCheck,
+    shortcut: "Ctrl+S",
+  },
+  {
+    name: "Download",
+    icon: IconDownload,
+  },
+  {
+    name: "Move to trash",
+    icon: IconTrash,
+  },
+];
+
+export const editMenuItems = [
+  {
+    name: "Editing",
+    description: "Make changes",
+    icon: IconPencil,
+  },
+  {
+    name: "Commenting",
+    description: "Add feedback",
+    icon: IconMessage,
+  },
+  {
+    name: "Viewing",
+    description: "Read-only",
+    icon: IconEye,
+  },
+];
 
 export const sideBarMenu = [
   {

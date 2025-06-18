@@ -25,6 +25,10 @@ const CanvasEditor = ({ designInfo }: { designInfo: any }) => {
             });
 
             initCanvas.renderAll();
+
+            return () => {
+                initCanvas.dispose();
+            }
         }
     }, [designInfo]);
     return (
