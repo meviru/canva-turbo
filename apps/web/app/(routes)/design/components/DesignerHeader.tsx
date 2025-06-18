@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -17,8 +18,10 @@ import {
 } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
-const DesignerHeader = () => {
+const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
+    const [designName, setDesignName] = useState(designInfo?.name);
     return (
         <div className="sticky top-0 z-10 p-2 px-5 flex items-center justify-between bg-linear-90 from-[#00c4cc] to-[#7d2ae8]">
             <div className="flex items-center">
@@ -63,7 +66,8 @@ const DesignerHeader = () => {
             <div className="flex items-center">
                 <Input
                     placeholder="Untitled design"
-                    value="Untitled design"
+                    value={designName}
+                    onChange={(e) => setDesignName(e.target.value)}
                     className="shadow-none font-medium h-10 max-w-56 placeholder:text-white border-1 border-transparent text-white mr-4 transition-all focus-visible:ring-0 hover:border-white/30 focus:border-white/30"
                 />
                 <Button
