@@ -1,12 +1,12 @@
 "use client";
-import { useState } from 'react';
 import { UserButton } from '@stackframe/stack';
-import { IconCrown, IconIndentDecrease, IconIndentIncrease, IconPlus } from "@tabler/icons-react";
+import { IconIndentDecrease, IconPlus } from "@tabler/icons-react";
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import { workspaceMenuItems } from '../constants';
-import logo from "public/Canva_Logo.svg";
-import Image from 'next/image';
+
 import { Button } from '@/components/ui/button';
+import SidebarExpanded from './SidebarExpanded';
 
 const Sidebar = () => {
     const path = usePathname();
@@ -14,12 +14,8 @@ const Sidebar = () => {
     return (
         <div className='h-screen flex'>
             <div className="h-screen flex flex-col items-center w-[72px] p-2 pb-4 bg-violet-50">
-                <Button variant="ghost" onClick={() => setIsDrawerOpen(!isDrawerOpen)} className='text-gray-500 size-10 p-0 cursor-pointer hover:bg-purple-200 hover:text-gray-500'>
-                    {isDrawerOpen ? (
-                        <IconIndentDecrease className='size-6' />
-                    ) : (
-                        <IconIndentIncrease className='size-6' />
-                    )}
+                <Button variant="ghost" onClick={() => setIsDrawerOpen(!isDrawerOpen)} className='text-gray-500 size-10 p-0 cursor-pointer hover:bg-purple-200 hover:text-violet-600'>
+                    <IconIndentDecrease className={`size-6 ${!isDrawerOpen ? "-scale-100" : ""}`} strokeWidth={1.5} />
                 </Button>
                 <div className="group flex flex-col items-center justify-center p-2 mt-2 mb-3 cursor-pointer">
                     <IconPlus className="bg-violet-600 rounded-full p-1 size-8 text-white transition-colors group-hover:bg-violet-700" />
@@ -51,17 +47,7 @@ const Sidebar = () => {
                 <UserButton />
             </div>
             {isDrawerOpen && (
-                <div className="h-screen flex flex-col border-l border-l-gray-300 w-[264px] p-4 bg-violet-50">
-                    <div className='flex flex-col'>
-                        <Image src={logo.src} width={80} height={30} alt="Canva" />
-                        <Button className="bg-white h-[38px] text-gray-950 flex items-center justify-center gap-2 mt-8 w-full cursor-pointer hover:bg-white">
-                            <IconCrown color="#fdbc68" fill="#fdbc68" /> Upgrade your plan
-                        </Button>
-                    </div>
-                    <div className="flex flex-col">
-                        <h4 className='text-[12px] text-gray-600 font-semibold mt-6'>Recent designs</h4>
-                    </div>
-                </div>
+                <SidebarExpanded />
             )}
         </div>
     )

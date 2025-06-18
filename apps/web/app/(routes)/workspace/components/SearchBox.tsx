@@ -2,7 +2,7 @@ import { IconArrowRight, IconSearch } from "@tabler/icons-react"
 
 const SearchBox = () => {
     return (
-        <div className="mx-auto mt-10 mb-16 flex max-w-2xl items-center justify-center">
+        <div className="mx-auto mt-10 mb-16 flex max-w-3xl items-center justify-center">
             <div className="w-full relative rounded-3xl shadow-lg shadow-violet-500/20 bg-gradient-to-r transition-all from-sky-400 via-violet-400 to-violet-700 p-[1px] hover:shadow-violet-500/50 focus-within:shadow-violet-500/50">
                 <IconSearch
                     size={22}
