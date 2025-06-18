@@ -134,6 +134,7 @@ export const canvasSizeOptions = [
     width: 1000,
     height: 1500,
     icon: IconBrandPinterestFilled,
-    background: "#E60023",
+    color: "#E60023",
+    background: "#f2f3f5",
   },
 ];
