@@ -11,7 +11,7 @@ export default function Handler(props: unknown) {
       <div className="absolute inset-0 bg-black opacity-50 -z-10"></div>
       <div className="absolute top-0 left-0 right-0 h-[250px] bg-linear-to-b from-black/90 to-transparent -z-10"></div>
       <div className="absolute bottom-0 left-0 right-0 h-[250px] bg-linear-to-t from-black/90 to-transparent -z-10"></div>
-      <div className="bg-white p-6 pb-7 w-[400px] mx-auto flex items-center justify-center rounded-lg">
+      <div className="bg-background dark:bg-zinc-900 dark:text-white/90 p-6 pb-7 w-[400px] mx-auto flex items-center justify-center rounded-lg">
         <StackHandler fullPage={false} app={stackServerApp} routeProps={props} />
       </div>
     </div>
