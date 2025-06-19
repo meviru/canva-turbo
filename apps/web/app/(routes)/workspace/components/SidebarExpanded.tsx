@@ -23,7 +23,7 @@ const SidebarExpanded = () => {
             <div className="p-4 pt-0">
                 <Button
                     variant="ghost"
-                    className="w-full h-[38px] text-gray-900 dark:text-white flex items-center justify-start gap-2 cursor-pointer hover:bg-black/5 dark:hover:bg-zinc-700"
+                    className="w-full h-[38px] text-gray-900 dark:text-white flex items-center justify-start gap-2 cursor-pointer hover:bg-black/5 dark:hover:bg-white/10"
                 >
                     <IconTrash className="size-5 -mt-0.5" />
                     Trash
