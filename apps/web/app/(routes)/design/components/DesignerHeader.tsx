@@ -57,13 +57,13 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                     <Menubar className="bg-transparent border-0 ml-5 shadow-none">
                         <MenubarMenu>
                             <MenubarTrigger className="text-white">File</MenubarTrigger>
-                            <MenubarContent className="p-0 w-80">
+                            <MenubarContent className="p-0 w-80 dark:bg-zinc-800">
                                 {fileMenuItems.map((item, index) => (
                                     <>
                                         {item.name ? (
-                                            <MenubarItem key={index} className="p-2.5 rounded-none text-gray-900 cursor-pointer">
-                                                <item.icon className="mx-1 size-[24px] text-gray-700" />
-                                                {item.name} <MenubarShortcut>{item.shortcut}</MenubarShortcut>
+                                            <MenubarItem key={index} className="p-2.5 rounded-none text-gray-900 dark:text-white/90 dark:hover:bg-zinc-700 cursor-pointer">
+                                                <item.icon className="mx-1 size-[24px] text-gray-700 dark:text-white/90" />
+                                                {item.name} <MenubarShortcut className="dark:text-white/50">{item.shortcut}</MenubarShortcut>
                                             </MenubarItem>
                                         ) : (
                                             item.component && <item.component className="my-1.5" />
@@ -79,8 +79,8 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                                 <IconCrown className="size-5 mr-1.5" color="#fdbc68" fill="#fdbc68" />
                                 Resize
                             </MenubarTrigger>
-                            <MenubarContent className="p-0 w-80">
-                                <MenubarItem className="py-2 rounded-none text-gray-900 cursor-pointer"></MenubarItem>
+                            <MenubarContent className="p-0 w-80 dark:bg-zinc-800">
+                                <MenubarItem className="py-2 rounded-none text-gray-900 dark:text-white/90 dark:hover:bg-zinc-700 cursor-pointer"></MenubarItem>
                             </MenubarContent>
                         </MenubarMenu>
                     </Menubar>
@@ -91,16 +91,16 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                                 <span className="mx-2">{designerMode.name}</span>
                                 <IconChevronDown size={18} />
                             </MenubarTrigger>
-                            <MenubarContent className="p-0 w-80">
+                            <MenubarContent className="p-0 w-80 dark:bg-zinc-800">
                                 {editMenuItems.map((item, index) => (
-                                    <MenubarItem key={index} onClick={() => setDesignerMode(item)} className="py-2 rounded-none text-gray-900 cursor-pointer">
-                                        <item.icon className="ml-1 mr-2 size-6 text-gray-700" />
+                                    <MenubarItem key={index} onClick={() => setDesignerMode(item)} className="py-2 rounded-none text-gray-900 dark:text-white/90 dark:hover:bg-zinc-700 cursor-pointer">
+                                        <item.icon className="ml-1 mr-2 size-6 text-gray-700 dark:text-white/90" />
                                         <div className="flex flex-col gap-1">
                                             <span>{item.name}</span>
-                                            <span className="text-xs text-muted-foreground">{item.description}</span>
+                                            <span className="text-xs text-muted-foreground dark:text-white/50">{item.description}</span>
                                         </div>
                                         {designerMode.name == item.name && (
-                                            <IconCheck className="ml-auto mr-1 size-5 text-gray-900" />
+                                            <IconCheck className="ml-auto mr-1 size-5 text-gray-900 dark:text-white/90" />
                                         )}
                                     </MenubarItem>
                                 ))}
@@ -118,14 +118,14 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                             <Button
                                 size="icon"
                                 variant="ghost"
-                                className="cursor-pointer border-none text-white transition-colors hover:bg-white/10 hover:text-white"
+                                className="cursor-pointer border-none text-white transition-colors hover:bg-white/10 hover:text-white dark:hover:bg-white/5"
                             >
                                 <IconArrowBackUp strokeWidth="1.75" className="size-6" />
                             </Button>
                             <Button
                                 size="icon"
                                 variant="ghost"
-                                className="ml-3 cursor-pointer border-none text-white transition-colors hover:bg-white/10 hover:text-white"
+                                className="ml-3 cursor-pointer border-none text-white transition-colors hover:bg-white/10 hover:text-white dark:hover:bg-white/5"
                             >
                                 <IconArrowForwardUp strokeWidth="1.75" className="size-6" />
                             </Button>
@@ -148,7 +148,7 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                     className="shadow-none font-medium h-10 max-w-56 placeholder:text-white border-1 border-transparent text-white mr-4 transition-all focus-visible:ring-0 hover:border-white/30 focus:border-white/30"
                 />
                 <Button
-                    className="flex items-center mr-4 cursor-pointer border-1 border-white/30 text-white transition-colors hover:bg-white/5 hover:text-white"
+                    className="flex items-center mr-4 cursor-pointer border-1 border-white/30 text-white transition-colors hover:bg-white/5 hover:text-white dark:hover:bg-white/5"
                     size="lg"
                     variant="ghost"
                 >
@@ -159,12 +159,12 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                 <Button
                     size="icon"
                     variant="ghost"
-                    className="ml-4 cursor-pointer border-1 border-white/30 text-white transition-colors hover:bg-white/5 hover:text-white"
+                    className="ml-4 cursor-pointer border-1 border-white/30 text-white transition-colors hover:bg-white/5 hover:text-white dark:hover:bg-white/5"
                 >
                     <IconMessageCircle strokeWidth="1.75" className="size-5" />
                 </Button>
                 <Button
-                    className="flex items-center ml-4 cursor-pointer"
+                    className="flex items-center ml-4 cursor-pointer dark:bg-white dark:text-gray-900 dark:hover:bg-white dark:hover:text-gray-900"
                     size="lg"
                     variant="outline"
                 >

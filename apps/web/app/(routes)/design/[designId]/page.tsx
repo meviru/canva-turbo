@@ -9,7 +9,7 @@ const DesignEditor = () => {
         height: 500
     }
     return (
-        <div className="flex flex-col h-screen bg-gray-100">
+        <div className="flex flex-col h-screen bg-gray-100 dark:bg-[#0d1216]">
             <DesignerHeader designInfo={designInfo} />
             <div className="flex flex-1 overflow-hidden">
                 <DesignSidebar />

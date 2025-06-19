@@ -4,7 +4,7 @@ const SidebarSettings = ({ selectedMenu }: { selectedMenu: any }) => {
             ? selectedMenu.component({ selectedMenu })
             : selectedMenu?.component;
 
-    return <div className="w-[360px] h-screen border-r">{RenderedComponent}</div>;
+    return <div className="w-[360px] h-screen border-r dark:border-white/10">{RenderedComponent}</div>;
 };
 
 export default SidebarSettings;
