@@ -9,7 +9,7 @@ import {
   IconDownload,
   IconEye,
   IconFrame,
-  IconMessage,
+  IconMessageCircle,
   IconPencil,
   IconPhoto,
   IconPhotoFilled,
@@ -20,7 +20,7 @@ import {
   IconSparkles,
   IconTable,
   IconTableFilled,
-  IconTrash,
+  IconTrash
 } from "@tabler/icons-react";
 
 export const fileMenuItems = [
@@ -67,7 +67,7 @@ export const editMenuItems = [
   {
     name: "Commenting",
     description: "Add feedback",
-    icon: IconMessage,
+    icon: IconMessageCircle,
   },
   {
     name: "Viewing",

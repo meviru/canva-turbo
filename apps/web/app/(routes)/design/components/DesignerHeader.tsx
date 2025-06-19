@@ -6,9 +6,8 @@ import {
     MenubarContent,
     MenubarItem,
     MenubarMenu,
-    MenubarSeparator,
     MenubarShortcut,
-    MenubarTrigger,
+    MenubarTrigger
 } from "@/components/ui/menubar";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -24,10 +23,9 @@ import {
     IconChevronDown,
     IconCloudCheck,
     IconCrown,
-    IconFrame,
-    IconMessage2,
+    IconMessageCircle,
     IconPencil,
-    IconUpload,
+    IconUpload
 } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -63,7 +61,7 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                                 {fileMenuItems.map((item, index) => (
                                     <>
                                         {item.name ? (
-                                            <MenubarItem key={index} className="p-3 rounded-none text-gray-900 cursor-pointer">
+                                            <MenubarItem key={index} className="p-2.5 rounded-none text-gray-900 cursor-pointer">
                                                 <item.icon className="mx-1 size-[24px] text-gray-700" />
                                                 {item.name} <MenubarShortcut>{item.shortcut}</MenubarShortcut>
                                             </MenubarItem>
@@ -72,6 +70,17 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                                         )}
                                     </>
                                 ))}
+                            </MenubarContent>
+                        </MenubarMenu>
+                    </Menubar>
+                    <Menubar className="bg-transparent border-0 shadow-none">
+                        <MenubarMenu>
+                            <MenubarTrigger className="text-white pl-3">
+                                <IconCrown className="size-5 mr-1.5" color="#fdbc68" fill="#fdbc68" />
+                                Resize
+                            </MenubarTrigger>
+                            <MenubarContent className="p-0 w-80">
+                                <MenubarItem className="py-2 rounded-none text-gray-900 cursor-pointer"></MenubarItem>
                             </MenubarContent>
                         </MenubarMenu>
                     </Menubar>
@@ -152,7 +161,7 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                     variant="ghost"
                     className="ml-4 cursor-pointer border-1 border-white/30 text-white transition-colors hover:bg-white/5 hover:text-white"
                 >
-                    <IconMessage2 strokeWidth="1.75" className="size-5" />
+                    <IconMessageCircle strokeWidth="1.75" className="size-5" />
                 </Button>
                 <Button
                     className="flex items-center ml-4 cursor-pointer"

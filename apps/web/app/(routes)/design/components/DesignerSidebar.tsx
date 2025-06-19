@@ -9,7 +9,7 @@ const DesignSidebar = () => {
 
     return (
         <div
-            className={`sticky top-0 z-10 flex ${selectedMenu.name ? "bg-white" : ""}`}
+            className={`sticky top-0 z-10 flex ${selectedMenu.name ? "bg-background" : ""}`}
         >
             <ul className="w-[75px] flex flex-col">
                 {sideBarMenu.map((menu: any, index: number) => (
@@ -20,9 +20,9 @@ const DesignSidebar = () => {
                     >
                         <div
                             className={`relative flex items-center justify-center size-8 rounded-md text-gray-500 transition-all ${selectedMenu.name === menu.name
-                                ? "bg-white shadow-md inset-shadow-2xs"
+                                ? "bg-background shadow-md border border-gray-200"
                                 : ""
-                                } group-hover:bg-white group-hover:shadow-md`}
+                                } group-hover:bg-background group-hover:shadow-md`}
                         >
                             {menu.name.toLowerCase() === "ai" && (
                                 <IconCrown

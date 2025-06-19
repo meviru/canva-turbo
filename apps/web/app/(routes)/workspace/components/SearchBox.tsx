@@ -3,22 +3,22 @@ import { IconArrowRight, IconSearch } from "@tabler/icons-react"
 const SearchBox = () => {
     return (
         <div className="mx-auto mt-10 mb-16 flex max-w-3xl items-center justify-center">
-            <div className="w-full relative rounded-3xl shadow-lg shadow-violet-500/20 bg-gradient-to-r transition-all from-sky-400 via-violet-400 to-violet-700 p-[1px] hover:shadow-violet-500/50 focus-within:shadow-violet-500/50">
+            <div className="w-full relative rounded-3xl shadow-lg shadow-violet-500/20 dark:shadow-violet-800/30 bg-gradient-to-r from-sky-400 via-violet-400 to-violet-700 p-[1px] transition-all hover:shadow-violet-500/50 dark:hover:shadow-violet-800/50 focus-within:shadow-violet-500/50 dark:focus-within:shadow-violet-800/50">
                 <IconSearch
                     size={22}
-                    className="absolute top-1/2 left-5 opacity-40 -translate-y-1/2"
+                    className="absolute top-1/2 left-5 opacity-40 -translate-y-1/2 text-black dark:text-white"
                 />
                 <input
                     type="text"
                     placeholder="Search millions of templates"
-                    className="outline-0 bg-white p-2 px-13 w-full text-sm h-[75px] rounded-[22px]"
+                    className="outline-0 bg-white dark:bg-zinc-900 text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-zinc-500 p-2 px-13 w-full text-sm h-[75px] rounded-[22px]"
                 />
-                <button className="absolute top-1/2 right-4 size-8 rounded-full bg-gray-200 cursor-pointer grid place-items-center -translate-y-1/2">
-                    <IconArrowRight size={20} className="opacity-70 w-full" />
+                <button className="absolute top-1/2 right-4 size-8 rounded-full bg-gray-200 dark:bg-zinc-700 cursor-pointer grid place-items-center -translate-y-1/2">
+                    <IconArrowRight size={20} className="opacity-70 text-black dark:text-white" />
                 </button>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default SearchBox

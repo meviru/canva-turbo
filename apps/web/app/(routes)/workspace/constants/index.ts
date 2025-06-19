@@ -13,11 +13,13 @@ import {
   IconFolderFilled,
   IconHome,
   IconHomeFilled,
-  IconLayout2,
-  IconLayout2Filled,
   IconPhotoFilled,
   IconPresentationFilled,
-  IconSortDescendingShapesFilled
+  IconSettings,
+  IconSortDescendingShapesFilled,
+  IconSparkles,
+  IconTable,
+  IconTableFilled,
 } from "@tabler/icons-react";
 
 export const workspaceMenuItems = [
@@ -35,15 +37,21 @@ export const workspaceMenuItems = [
   },
   {
     name: "Templates",
-    icon: IconLayout2,
-    iconFilled: IconLayout2Filled,
+    icon: IconTable,
+    iconFilled: IconTableFilled,
     path: "/workspace/templates",
   },
   {
-    name: "Billing",
-    icon: IconCreditCard,
-    iconFilled: IconCreditCardFilled,
-    path: "/workspace/billing",
+    name: "Cavna AI",
+    icon: IconSparkles,
+    iconFilled: IconSparkles,
+    path: "/workspace/ai",
+  },
+  {
+    name: "Admin",
+    icon: IconSettings,
+    iconFilled: IconSettings,
+    path: "/workspace/settings",
   },
 ];
 
