@@ -41,7 +41,8 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
     });
 
     return (
-        <div className="sticky top-0 z-10 p-2 px-5 flex items-center justify-between bg-linear-90 from-[#00c4cc] to-[#7d2ae8]">
+        <div className="sticky top-0 z-10 p-2 px-5 flex items-center justify-between bg-linear-90 from-[#00c4cc]  via-[#4272db]  to-[#7c2ae8]">
+            <div className="absolute inset-0 z-[-1] pointer-events-none bg-black/5" />
             <div className="flex items-center">
                 <Link href={"/workspace"}>
                     <Image

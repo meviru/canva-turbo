@@ -4,20 +4,18 @@ import { IconCrown } from "@tabler/icons-react";
 import { useState } from "react";
 import { sideBarMenu } from "../constants";
 import SidebarSettings from "./SidebarSettings";
-import { useTheme } from "next-themes";
 
 const DesignSidebar = () => {
-    const [selectedMenu, setSelectedMenu] = useState<any>("");
-    const { theme } = useTheme();
+    const [selectedMenu, setSelectedMenu] = useState<any>(sideBarMenu[0]);
 
     return (
         <div
             className={cn(
-                "sticky top-0 z-10 py-1.5 flex",
+                "sticky top-0 z-10 flex",
                 selectedMenu.name && "bg-background dark:bg-zinc-800"
             )}
         >
-            <ul className="w-[75px] flex flex-col">
+            <ul className="w-[75px] flex flex-col py-1.5">
                 {sideBarMenu.map((menu: any, index: number) => {
                     return (
                         <li
