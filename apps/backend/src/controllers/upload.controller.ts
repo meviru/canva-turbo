@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { imagekit } from "../config/imagekit";
-import { Asset } from "../models/Asset";
+import { Asset } from "../models/asset.model";
 
 export const getUploadAuthParams = (req: Request, res: Response) => {
   try {
