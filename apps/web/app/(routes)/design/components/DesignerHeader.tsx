@@ -112,7 +112,7 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                     <>
                         <Separator
                             orientation="vertical"
-                            className="mx-3 ml-5 min-h-8 opacity-30"
+                            className="mx-3 min-h-8 opacity-30 dark:bg-white/50"
                         />
                         <div className="flex items-center">
                             <Button
@@ -130,7 +130,7 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                                 <IconArrowForwardUp strokeWidth="1.75" className="size-6" />
                             </Button>
                         </div>
-                        <Separator orientation="vertical" className="mx-3 min-h-8 opacity-30" />
+                        <Separator orientation="vertical" className="mx-3 min-h-8 opacity-30 dark:bg-white/50" />
                         <Tooltip>
                             <TooltipTrigger className="cursor-pointer border-none text-white">
                                 <IconCloudCheck strokeWidth="1.75" className="size-6" />
