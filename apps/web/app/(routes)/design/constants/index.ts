@@ -78,7 +78,7 @@ export const editMenuItems = [
 
 export const sideBarMenu = [
   {
-    name: "Desings",
+    name: "Designs",
     icon: IconTable,
     iconFilled: IconTableFilled,
     iconColor: "#13a3b5",
