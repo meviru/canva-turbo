@@ -145,7 +145,7 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                     placeholder="Untitled design"
                     value={designName}
                     onChange={(e) => setDesignName(e.target.value)}
-                    className="shadow-none font-medium h-10 max-w-56 placeholder:text-white border-1 border-transparent text-white mr-4 transition-all focus-visible:ring-0 hover:border-white/30 focus:border-white/30"
+                    className="shadow-none font-medium h-10 max-w-56 placeholder:text-white border-1 border-transparent text-white mr-4 transition-all focus-visible:ring-0 hover:border-white/30 focus:border-white/30 dark:bg-transparent dark:focus:border-white/30"
                 />
                 <Button
                     className="flex items-center mr-4 cursor-pointer border-1 border-white/30 text-white transition-colors hover:bg-white/5 hover:text-white dark:hover:bg-white/5"

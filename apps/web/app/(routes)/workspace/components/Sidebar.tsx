@@ -53,7 +53,7 @@ const Sidebar = () => {
                                 <IconTag
                                     strokeWidth={1.5}
                                     className={cn(
-                                        "p-1.5 size-10 rounded-lg transition-colors",
+                                        "p-1.5 size-10 rounded-lg transition-colors dark:backdrop-blur-lg",
                                         isActive
                                             ? "bg-purple-200 text-violet-600 dark:bg-white/10 dark:text-white"
                                             : "text-gray-400 dark:text-white/70",

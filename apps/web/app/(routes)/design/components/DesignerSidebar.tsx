@@ -29,9 +29,9 @@ const DesignSidebar = () => {
                                 className={cn(
                                     "relative flex items-center justify-center size-8 rounded-md border border-transparent group-hover:border-zinc-200 text-gray-500 dark:text-zinc-300 transition-all",
                                     selectedMenu.name === menu.name
-                                        ? "bg-background dark:bg-zinc-800 shadow-md border-zinc-200 dark:border-zinc-700"
+                                        ? "bg-background shadow-md border-zinc-200 dark:bg-zinc-700 dark:border-zinc-600 dark:backdrop-blur-lg"
                                         : "",
-                                    "group-hover:bg-background group-hover:shadow-md dark:group-hover:bg-zinc-800 dark:group-hover:border-zinc-700"
+                                    "group-hover:bg-background group-hover:shadow-md dark:group-hover:bg-zinc-700 dark:group-hover:border-zinc-600 dark:hover:backdrop-blur-lg"
                                 )}
                             >
                                 {menu.name.toLowerCase() === "ai" && (
