@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import Sidebar from "./components/Sidebar";
 
 const WorkspaceLayout = ({ children }: { children: React.ReactNode }) => {

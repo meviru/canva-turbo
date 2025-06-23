@@ -1,11 +1,25 @@
-import { getContrastColor } from "@/lib/utils";
+"use client";
+
+import { useCreateDesignMutation } from "@/services/design.service";
+import { getContrastColor } from "@/shared/lib/utils";
 import { IconFrame } from "@tabler/icons-react";
 import { canvasSizeOptions } from "../constants";
 import CreateNewCanvas from "./CreateNewCanvas";
 
 const SizeOptions = () => {
-    const onCanvasOptionSelect = (option: any) => {
-        console.log(option);
+    const [createDesign] = useCreateDesignMutation();
+    const onCanvasOptionSelect = async (option: any) => {
+        try {
+            const result = await createDesign({
+                name: option.name,
+                width: option.width,
+                height: option.height,
+                userId: null
+            }).unwrap();
+            console.log(result);
+        } catch (err) {
+            console.error("Failed to create design:", err)
+        }
     };
 
     return (
@@ -14,6 +28,7 @@ const SizeOptions = () => {
                 <li
                     key={i}
                     className="group flex flex-col items-center justify-center cursor-pointer"
+                    onClick={() => onCanvasOptionSelect(option)}
                 >
                     <div
                         className="size-12 flex items-center justify-center rounded-full transition-transform group-hover:scale-[1.05]"

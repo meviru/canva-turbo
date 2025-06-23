@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { workspaceMenuItems } from '../constants';
 import CreateNewCanvas from './CreateNewCanvas';
 import SidebarExpanded from './SidebarExpanded';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
 const Sidebar = () => {
     const path = usePathname();

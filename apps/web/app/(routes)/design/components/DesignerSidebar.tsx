@@ -1,5 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { IconCrown } from "@tabler/icons-react";
 import { useState } from "react";
 import { sideBarMenu } from "../constants";

@@ -4,6 +4,7 @@ import { stackServerApp } from "../stack";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "./components/ui/sonner";
+import { StoreProvider } from "./store";
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -28,12 +29,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${poppins.variable} antialiased`}>
-        <StackProvider app={stackServerApp}>
-          <StackTheme>
-            {children}
-            <Toaster />
-          </StackTheme>
-        </StackProvider>
+        <StoreProvider>
+          <StackProvider app={stackServerApp}>
+            <StackTheme>
+              {children}
+              <Toaster />
+            </StackTheme>
+          </StackProvider>
+        </StoreProvider>
       </body>
     </html>
   );
