@@ -3,9 +3,7 @@ import { Request, Response } from "express";
 
 export const createDesign = async (req: Request, res: Response) => {
   try {
-    const { name, width, height } = req.body;
-    const { user } = req as Request & { user?: { id: string } };
-    const userId = user?.id;
+    const { name, width, height, userId } = req.body;
     const newDesign = await Design.create({
       name: name || "Untitled Design",
       width,
