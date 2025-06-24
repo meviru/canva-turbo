@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/db";
 import uploadRoutes from "./routes/upload.routes";
 import designRoutes from "./routes/design.routes";
+import userRoutes from "./routes/user.routes";
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.json());
 // Routes setup
 app.use("/api/upload", uploadRoutes);
 app.use("/api/design", designRoutes);
+app.use("/api/user", userRoutes);
 
 // Database connection
 connectDB();
