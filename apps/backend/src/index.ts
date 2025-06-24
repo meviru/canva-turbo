@@ -9,13 +9,18 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Middleware setup
 app.use(cors());
 app.use(express.json());
+
+// Routes setup
 app.use("/api/upload", uploadRoutes);
 app.use("/api/design", designRoutes);
 
+// Database connection
 connectDB();
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Backend running at http://localhost:${PORT}`);
 });
