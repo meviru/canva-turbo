@@ -10,7 +10,11 @@ export const saveUser = async (req: Request, res: Response) => {
       user = await User.create({ authId, name, email, image });
     }
 
-    res.status(200).json(user);
+    res.status(200).json({
+      success: true,
+      message: "User saved successfully",
+      user: user,
+    });
   } catch (err) {
     res.status(500).json({ message: "Error saving user", error: err });
   }

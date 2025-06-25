@@ -1,16 +1,19 @@
 "use client";
 
 import { designService } from "@/services/design.service";
+import { userService } from "@/services/user.service";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 
 export const store = configureStore({
   reducer: {
     [designService.reducerPath]: designService.reducer,
+    [userService.reducerPath]: userService.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      designService.middleware
+      designService.middleware,
+      userService.middleware
     ),
 });
 
