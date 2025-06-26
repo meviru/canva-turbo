@@ -2,9 +2,7 @@
 
 import { useSaveUserMutation } from "@/services/user.service";
 import { setUser } from "@/store/slices/userSlice";
-import type { CurrentUser } from "@stackframe/stack";
 import { useUser } from "@stackframe/stack";
-import { redirect } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 
@@ -16,16 +14,13 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const hasSaved = useRef(false);
 
     useEffect(() => {
-        if (!user) {
-            redirect("/handler/sign-in");
-        }
         if (!hasSaved.current) {
             hasSaved.current = true;
             saveUserInfo(user);
         }
     }, [user, saveUser]);
 
-    const saveUserInfo = async (user: CurrentUser) => {
+    const saveUserInfo = async (user: any) => {
         try {
             const savedUser = await saveUser({
                 authId: user.id,
@@ -36,8 +31,6 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
 
             dispatch(setUser(savedUser?.user));
             localStorage.setItem("user", JSON.stringify(savedUser?.user));
-
-            redirect("/workspace");
         } catch (error) {
             console.error("Failed to save user:", error);
         }
