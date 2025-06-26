@@ -7,8 +7,7 @@ const designSchema = new mongoose.Schema(
     height: { type: Number, required: true },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: false,
+      ref: "Users",
     },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

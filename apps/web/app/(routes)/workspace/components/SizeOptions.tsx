@@ -3,32 +3,32 @@
 import { useCreateDesignMutation } from "@/services/design.service";
 import { getContrastColor } from "@/shared/lib/utils";
 import { IconFrame } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { canvasSizeOptions } from "../constants";
 import CreateNewCanvas from "./CreateNewCanvas";
 
 const SizeOptions = () => {
     const user = useSelector((state: any) => state.user);
+    const router = useRouter();
     const [createDesign] = useCreateDesignMutation();
+    
     const onCanvasOptionSelect = async (option: any) => {
-        console.log(user);
-        // try {
-        //     await createDesign({
-        //         name: option.name,
-        //         width: option.width,
-        //         height: option.height,
-        //         userId: null
-        //     })
-        //         .unwrap()
-        //         .then((response) => {
-        //             redirect(`/design/${response._id}`);
-        //         })
-        //         .catch((error) => {
-        //             console.error("Error creating design:", error);
-        //         });
-        // } catch (error) {
-        //     console.error("Failed to create design:", error)
-        // }
+        try {
+            await createDesign({
+                name: option.name,
+                width: option.width,
+                height: option.height,
+                userId: user._id
+            }).unwrap().then((response) => {
+                const { design } = response;
+                router.push(`/design/${design._id}`);
+            }).catch((error) => {
+                console.error("Error creating design:", error);
+            });
+        } catch (error) {
+            console.error("Failed to create design:", error)
+        }
     };
 
     return (
