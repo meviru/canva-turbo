@@ -4,9 +4,11 @@ import { designService } from "@/services/design.service";
 import { userService } from "@/services/user.service";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
+import userSlice from "@/store/slices/userSlice";
 
 export const store = configureStore({
   reducer: {
+    user: userSlice,
     [designService.reducerPath]: designService.reducer,
     [userService.reducerPath]: userService.reducer,
   },

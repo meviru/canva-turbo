@@ -22,7 +22,9 @@ const Heading = () => {
                         alt="Header BG"
                         width={1024}
                         height={300}
+                        priority={true}
                         className="mix-blend-overlay"
+                        style={{ height: "auto", width: "auto" }}
                     />
                 </div>
 
@@ -41,7 +43,9 @@ const Heading = () => {
                         alt="Header BG"
                         width={1024}
                         height={300}
+                        priority={true}
                         className="mix-blend-soft-light opacity-80"
+                        style={{ height: "auto", width: "auto" }}
                     />
                 </div>
             </>
