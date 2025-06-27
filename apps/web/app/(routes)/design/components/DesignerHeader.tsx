@@ -24,21 +24,21 @@ import {
     IconCloudCheck,
     IconCrown,
     IconMessageCircle,
-    IconPencil,
     IconUpload
 } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { editMenuItems, fileMenuItems } from "../constants";
 
-const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
-    const [designName, setDesignName] = useState(designInfo?.name);
+const DesignerHeader = ({ user, designInfo, designerMode, setDesignerMode }: { user: any, designInfo: any, designerMode: any, setDesignerMode: any }) => {
+    const [designName, setDesignName] = useState(designInfo?.name || "Untitled Design");
 
-    const [designerMode, setDesignerMode] = useState({
-        name: "Editing",
-        icon: IconPencil
-    });
+    useEffect(() => {
+        if (designInfo?.name) {
+            setDesignName(designInfo.name);
+        }
+    }, [designInfo]);
 
     return (
         <div className="sticky top-0 z-10 p-2 px-5 flex items-center justify-between bg-linear-90 from-[#00c4cc]  via-[#4272db]  to-[#7c2ae8]">
@@ -49,8 +49,8 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                         src={"/Canva_Logo.svg"}
                         width={80}
                         height={50}
-                        alt={"logo"}
-                        loading="lazy"
+                        alt={"Canva"}
+                        loading="eager"
                         className="brightness-0 invert"
                     />
                 </Link>
@@ -76,10 +76,12 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
                     </Menubar>
                     <Menubar className="bg-transparent border-0 shadow-none">
                         <MenubarMenu>
-                            <MenubarTrigger className="text-white pl-3">
-                                <IconCrown className="size-5 mr-1.5" color="#fdbc68" fill="#fdbc68" />
-                                Resize
-                            </MenubarTrigger>
+                            {designerMode.name == "Editing" && (
+                                <MenubarTrigger className="text-white pl-3">
+                                    <IconCrown className="size-5 mr-1.5" color="#fdbc68" fill="#fdbc68" />
+                                    Resize
+                                </MenubarTrigger>
+                            )}
                             <MenubarContent className="p-0 w-80 dark:bg-zinc-800">
                                 <MenubarItem className="py-2 rounded-none text-gray-900 dark:text-white/90 dark:hover:bg-zinc-700 cursor-pointer"></MenubarItem>
                             </MenubarContent>
@@ -144,7 +146,8 @@ const DesignerHeader = ({ designInfo }: { designInfo: any }) => {
             <div className="flex items-center">
                 <Input
                     placeholder="Untitled design"
-                    value={designName}
+                    disabled={designerMode.name !== "Editing"}
+                    value={designerMode.name !== "Editing" ? `${designName} by ${user?.name}` : designName}
                     onChange={(e) => setDesignName(e.target.value)}
                     className="shadow-none font-medium h-10 max-w-56 placeholder:text-white border-1 border-transparent text-white mr-4 transition-all focus-visible:ring-0 hover:border-white/30 focus:border-white/30 dark:bg-transparent dark:focus:border-white/30"
                 />
