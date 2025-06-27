@@ -1,21 +1,24 @@
 "use client";
 
 import { designService } from "@/services/design.service";
+import { photosService } from "@/services/photos.service";
 import { userService } from "@/services/user.service";
+import userSlice from "@/store/slices/userSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
-import userSlice from "@/store/slices/userSlice";
 
 export const store = configureStore({
   reducer: {
     user: userSlice,
     [designService.reducerPath]: designService.reducer,
     [userService.reducerPath]: userService.reducer,
+    [photosService.reducerPath]: photosService.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       designService.middleware,
-      userService.middleware
+      userService.middleware,
+      photosService.middleware
     ),
 });
 
