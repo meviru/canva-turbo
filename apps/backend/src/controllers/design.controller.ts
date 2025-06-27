@@ -18,11 +18,16 @@ export const createDesign = async (req: Request, res: Response) => {
   }
 };
 
-export const getDesigns = async (req: Request, res: Response) => {
+export const getDesigns: any = async (req: Request, res: Response) => {
   try {
-    const userId = req.params.userId;
-    const designs = await Design.find({ userId });
+    const userId = req.query.userId as string;
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Missing userId" });
+    }
 
+    const designs = await Design.find({ userId });
     res.status(200).json({ success: true, designs });
   } catch (error) {
     console.error("Error fetching designs:", error);
