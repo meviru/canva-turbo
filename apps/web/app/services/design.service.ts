@@ -16,9 +16,17 @@ export const designService = createApi({
       }),
       invalidatesTags: ["Design"],
     }),
+    getDesigns: builder.query<any, void>({
+      query: (userId) => ({
+        url: "/all",
+        method: "GET",
+        params: { userId },
+      }),
+      providesTags: ["Design"],
+    }),
     getDesignById: builder.query<any, string>({
-      query: (id) => ({
-        url: `/${id}`,
+      query: (userId) => ({
+        url: `/${userId}`,
         method: "GET",
       }),
       providesTags: ["Design"],
@@ -26,4 +34,4 @@ export const designService = createApi({
   }),
 });
 
-export const { useCreateDesignMutation, useGetDesignByIdQuery } = designService;
+export const { useCreateDesignMutation, useGetDesignsQuery, useGetDesignByIdQuery } = designService;

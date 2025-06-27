@@ -1,13 +1,26 @@
 "use client";
 
 import { CardContent, CardDescription, CardFooter, CardTitle } from "@/components/ui/card";
+import { useGetDesignsQuery } from "@/services/design.service";
 import { Card } from "@repo/ui/card";
 import Image from "next/image";
 import emptyStateImage from "public/empty-state.webp";
-import { useState } from "react";
+import placeholderImage from "public/placeholder-image.png";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const RecentDesigns = () => {
+    const user = useSelector((state: any) => state.user);
     const [designList, setDesignList] = useState([]);
+    const { data, isLoading } = useGetDesignsQuery(user?._id, {
+        skip: !user?._id,
+    });
+
+    useEffect(() => {
+        if (data && data.designs) {
+            setDesignList(data.designs);
+        }
+    }, [data, isLoading]);
 
     return (
         <div className="mt-7">
@@ -29,21 +42,20 @@ const RecentDesigns = () => {
                 <div className="grid xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-2 gap-5 mt-4">
                     {designList?.map((design: any, i) => (
                         <Card
-                            title=""
                             key={i}
                             href={`/design/${design.id}`}
-                            className="cursor-pointer shadow-none border-0"
-                        >
+                            title={""}
+                            className="cursor-pointer shadow-none border-0">
                             <CardContent className="p-4 flex items-center justify-center bg-gray-200 overflow-hidden rounded-xl">
                                 <Image
-                                    src={"https://placehold.co/400"}
+                                    src={design.image || placeholderImage}
                                     alt={design.name}
                                     width={200}
                                     height={160}
-                                    className="object-contain"
+                                    className="object-cover w-full h-full"
                                 />
                             </CardContent>
-                            <CardFooter className="p-0 flex flex-col items-start gap-1.5">
+                            <CardFooter className="p-0 flex flex-col items-start gap-1.5 mt-4">
                                 <CardTitle>{design.name}</CardTitle>
                                 <CardDescription>
                                     {design.width} x {design.height}
