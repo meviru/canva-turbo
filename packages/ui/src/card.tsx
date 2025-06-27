@@ -14,10 +14,8 @@ export function Card({
   return (
     <a
       className={className}
-      href={`${href}?utm_source=create-turbo&utm_medium=basic&utm_campaign=create-turbo"`}
-      rel="noopener noreferrer"
-      target="_blank"
-    >
+      href={href}
+      rel="noopener noreferrer">
       <h2>{title}</h2>
       <div>{children}</div>
     </a>

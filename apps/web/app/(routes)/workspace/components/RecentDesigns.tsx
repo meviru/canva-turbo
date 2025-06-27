@@ -43,7 +43,7 @@ const RecentDesigns = () => {
                     {designList?.map((design: any, i) => (
                         <Card
                             key={i}
-                            href={`/design/${design.id}`}
+                            href={`/design/${design._id}`}
                             title={""}
                             className="cursor-pointer shadow-none border-0">
                             <CardContent className="p-4 flex items-center justify-center bg-gray-200 overflow-hidden rounded-xl">
