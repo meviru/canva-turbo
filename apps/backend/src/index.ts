@@ -5,6 +5,7 @@ import connectDB from "./config/db";
 import uploadRoutes from "./routes/upload.routes";
 import designRoutes from "./routes/design.routes";
 import userRoutes from "./routes/user.routes";
+import photoRoutes from "./routes/photos.routes";
 
 dotenv.config();
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use("/api/upload", uploadRoutes);
 app.use("/api/design", designRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/photos", photoRoutes);
 
 // Database connection
 connectDB();
