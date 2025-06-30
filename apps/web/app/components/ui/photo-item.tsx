@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
 import clsx from "clsx";
+import React, { useState } from "react";
 
 interface PhotoItemProps {
     photo: any;
@@ -23,7 +23,7 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, rowLength }) => {
     return (
         <div
             className={clsx(
-                "relative overflow-hidden rounded-md bg-zinc-200 dark:bg-zinc-800",
+                "relative overflow-hidden rounded-xs cursor-pointer bg-zinc-200 dark:bg-zinc-800",
                 !isLoaded && "animate-pulse"
             )}
             style={{
