@@ -3,7 +3,7 @@ import unsplash from "../config/unsplash";
 
 export const getPhotos = async (req: Request, res: Response) => {
   try {
-    const searchQuery = req.query.q as string;
+    const searchQuery = req.query.q as string || "random"; // Default to "random" if no query is provided
     const result = await unsplash.search.getPhotos({
       query: searchQuery,
       page: 1,
