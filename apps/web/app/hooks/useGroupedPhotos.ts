@@ -19,16 +19,27 @@ export const useGroupedPhotos = (
 
     for (const photo of photos) {
       const ratio = photo.width / photo.height;
+
+      // Limit max items based on orientation
+      const isLandscape = ratio > 1.3;
+      const maxPhotosInRow = isLandscape ? 2 : 4;
+
       currentRow.push(photo);
       ratioSum += ratio;
 
+      // Push the row based on total ratio OR item count
       if (ratioSum >= maxRowRatio && currentRow.length >= minPhotosPerRow) {
+        rows.push(currentRow);
+        currentRow = [];
+        ratioSum = 0;
+      } else if (currentRow.length >= maxPhotosInRow) {
         rows.push(currentRow);
         currentRow = [];
         ratioSum = 0;
       }
     }
 
+    // Handle remaining items
     if (currentRow.length > 0) {
       if (currentRow.length < minPhotosPerRow && rows.length > 0) {
         const lastRow = rows[rows.length - 1];

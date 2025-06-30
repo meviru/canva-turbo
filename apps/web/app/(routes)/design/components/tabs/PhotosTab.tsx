@@ -36,40 +36,23 @@ const PhotosTab = () => {
                 {isLoading && <p className="text-sm text-gray-500">Loading...</p>}
                 {!isLoading &&
                     groupedRows.map((row, rowIndex) => {
-                        let height = 160;
-                        if (row.length >= 4) height = 100;
-                        else if (row.length === 3) height = 110;
-                        else if (row.length === 2) height = 140;
+                        const itemCount = row.length;
 
-                        const getWidths = () => {
-                            if (row.length === 4) return Array(4).fill(1);
-                            if (row.length === 3) return [2, 1, 1];
-                            if (row.length === 2) return [1.5, 1];
-                            return [1];
-                        };
-
-                        const widths = getWidths();
+                        let rowHeight = 160;
+                        if (itemCount >= 4) rowHeight = 100;
+                        else if (itemCount === 3) rowHeight = 110;
+                        else if (itemCount === 2) rowHeight = 140;
 
                         return (
-                            <div
-                                key={rowIndex}
-                                className="flex gap-2 w-full overflow-hidden"
-                                style={{ height }}
-                            >
-                                {row.map((photo, i) => (
-                                    <PhotoItem
-                                        key={photo.id}
-                                        src={photo.urls.small}
-                                        alt={photo.alt_description}
-                                        style={{
-                                            flexGrow: widths[i],
-                                            flexShrink: 0,
-                                            flexBasis: widths[i],
-                                            minWidth: 0,
-                                            height,
-                                        }}
-                                    />
-                                ))}
+                            <div key={rowIndex} className="flex gap-3 w-full overflow-hidden">
+                                {row.map((photo) => {
+                                    const isLandscape = photo.width > photo.height;
+                                    const flexValue = isLandscape ? 1.6 : 1;
+
+                                    return (
+                                        <PhotoItem key={photo.id} photo={photo} rowLength={row.length} />
+                                    );
+                                })}
                             </div>
                         );
                     })
