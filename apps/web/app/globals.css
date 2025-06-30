@@ -125,6 +125,26 @@ body {
   }
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #52525c;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #52525c;
+}
+
 .circle-picker::before {
   content: "";
   display: block;

@@ -14,7 +14,7 @@ const PhotoItem = ({
 
     return (
         <div
-            className="relative rounded-xs overflow-hidden bg-gray-200"
+            className="relative cursor-pointer rounded-xs overflow-hidden bg-gray-200"
             style={style}
         >
             {!loaded && (
@@ -24,7 +24,7 @@ const PhotoItem = ({
                 loading="lazy"
                 src={src}
                 alt={alt}
-                className={`w-full h-full object-cover transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"
+                className={`w-full h-full object-cover object-center transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"
                     }`}
                 onLoad={() => setLoaded(true)}
             />

@@ -18,7 +18,7 @@ const SidebarSettings = ({ selectedMenu }: { selectedMenu: any }) => {
     if (!TabComponent) return null;
 
     return (
-        <div className="w-[360px] h-screen border-r dark:border-white/10">
+        <div className="w-[360px] h-full border-r dark:border-white/10">
             <TabComponent />
         </div>
     );
