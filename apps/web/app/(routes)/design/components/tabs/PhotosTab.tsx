@@ -3,6 +3,7 @@ import TabHeader from "./TabHeader";
 import TabSearchBox from "./TabSearchBox";
 import { useGetPhotosQuery } from "@/services/photos.service";
 import { useGroupedPhotos } from "@/hooks/useGroupedPhotos";
+import PhotoItem from "@/components/ui/photo-item";
 
 const PhotosTab = () => {
     const [searchValue, setSearchValue] = useState("");
@@ -31,7 +32,7 @@ const PhotosTab = () => {
                 />
             </TabHeader>
 
-            <div className="grow overflow-y-auto p-4 space-y-2">
+            <div className="grow overflow-y-auto p-4 pt-0 space-y-2">
                 {isLoading && <p className="text-sm text-gray-500">Loading...</p>}
                 {!isLoading &&
                     groupedRows.map((row, rowIndex) => {
@@ -56,22 +57,18 @@ const PhotosTab = () => {
                                 style={{ height }}
                             >
                                 {row.map((photo, i) => (
-                                    <div
+                                    <PhotoItem
                                         key={photo.id}
-                                        className="rounded-xs overflow-hidden"
+                                        src={photo.urls.small}
+                                        alt={photo.alt_description}
                                         style={{
                                             flexGrow: widths[i],
-                                            flexShrink: 1,
-                                            flexBasis: 0,
+                                            flexShrink: 0,
+                                            flexBasis: widths[i],
                                             minWidth: 0,
+                                            height,
                                         }}
-                                    >
-                                        <img
-                                            src={photo.urls.small}
-                                            alt={photo.alt_description}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
+                                    />
                                 ))}
                             </div>
                         );

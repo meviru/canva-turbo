@@ -9,7 +9,7 @@ export interface PhotoItem {
 
 export const useGroupedPhotos = (
   photos: PhotoItem[] = [],
-  maxRowRatio: number = 4,
+  maxRowRatio: number = 3,
   minPhotosPerRow: number = 2
 ) => {
   return useMemo(() => {
