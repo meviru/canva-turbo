@@ -16,10 +16,10 @@ app.use(cors());
 app.use(express.json());
 
 // Routes setup
-app.use("/api/upload", uploadRoutes);
 app.use("/api/design", designRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/photos", photoRoutes);
+app.use("/api/images", uploadRoutes);
 
 // Database connection
 connectDB();
