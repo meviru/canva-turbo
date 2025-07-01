@@ -2,6 +2,7 @@
 
 import { designService } from "@/services/design.service";
 import { photosService } from "@/services/photos.service";
+import { uploadService } from "@/services/upload.service";
 import { userService } from "@/services/user.service";
 import userSlice from "@/store/slices/userSlice";
 import { configureStore } from "@reduxjs/toolkit";
@@ -13,12 +14,14 @@ export const store = configureStore({
     [designService.reducerPath]: designService.reducer,
     [userService.reducerPath]: userService.reducer,
     [photosService.reducerPath]: photosService.reducer,
+    [uploadService.reducerPath]: uploadService.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       designService.middleware,
       userService.middleware,
-      photosService.middleware
+      photosService.middleware,
+      uploadService.middleware
     ),
 });
 
