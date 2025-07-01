@@ -5,28 +5,34 @@ import { IconDots, IconLoaderQuarter } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
+import { useUploadFileMutation } from "@/services/upload.service";
 
 const UploadsTab = () => {
     const { designId } = useParams<any>();
     const [searchValue, setSearchValue] = useState('');
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [uploadFile] = useUploadFileMutation();
 
     const handleUpload = async () => {
         const fileInput = fileInputRef.current;
-        if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        if (!fileInput || !fileInput.files?.length) {
             toast("Please select a file to upload");
             return;
         }
 
+        setLoading(true);
         const file: any = fileInput.files[0];
         const formData = new FormData();
         formData.append("file", file);
         formData.append("designId", designId);
-
-        setLoading(true);
         try {
+            const response = await uploadFile({ formData }).unwrap();
+            toast.success("File uploaded successfully");
+            fileInputRef.current!.value = '';
+            console.log("Upload response:", response);
         } catch (error) {
+            toast.error("File upload failed");
             console.error("Upload error:", error);
         } finally {
             setLoading(false);
