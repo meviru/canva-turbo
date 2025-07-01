@@ -14,7 +14,7 @@ const TabSearchBox = ({
     onChange,
 }: TabSearchBoxProps) => {
     return (
-        <div className="relative w-full mb-4">
+        <div className="relative w-full mb-3">
             <IconSearch
                 size={22}
                 className="absolute top-1/2 left-2.5 -translate-y-1/2 text-gray-500 dark:text-zinc-300"
