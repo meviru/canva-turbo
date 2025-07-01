@@ -12,7 +12,7 @@ const PhotosTab = () => {
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearch(searchValue);
-        }, 400);
+        }, 1000);
         return () => clearTimeout(handler);
     }, [searchValue]);
 
