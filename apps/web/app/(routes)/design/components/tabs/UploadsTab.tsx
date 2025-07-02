@@ -1,19 +1,30 @@
-import { Button } from "@/components/ui/button";
-import { useLazyListFilesQuery, useUploadFileMutation } from "@/services/upload.service";
-import { IconDots, IconLoaderQuarter } from "@tabler/icons-react";
-import { useRef, useState } from "react";
+import UploadButton from "@/components/ui/upload-button";
+import { useListFilesQuery, useUploadFileMutation } from "@/services/upload.service";
+import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import TabHeader from "./TabHeader";
 import TabSearchBox from "./TabSearchBox";
+import { useGroupedPhotos } from "@/hooks/useGroupedPhotos";
+import PhotoItem from "@/components/ui/photo-item";
 
 const UploadsTab = () => {
     const user = useSelector((state: any) => state.user);
     const [searchValue, setSearchValue] = useState('');
     const [loading, setLoading] = useState(false);
+    const [groupedRows, setGroupedRows] = useState<any[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploadFile] = useUploadFileMutation();
-    const [listFiles] = useLazyListFilesQuery();
+    const { data: filesData } = useListFilesQuery({ userId: user._id }, {
+        skip: !user._id
+    });
+
+    const files = useGroupedPhotos(filesData?.data);
+
+    useEffect(() => {
+        setGroupedRows(files);
+    }, [files]);
 
     const handleUpload = async () => {
         const fileInput = fileInputRef.current;
@@ -43,43 +54,28 @@ const UploadsTab = () => {
             console.error("Upload error:", error);
         } finally {
             setLoading(false);
-            listFiles({ userId: user._id as string })
         }
     };
+
+    const hasGroupedRows = groupedRows && groupedRows.length > 0;
 
     return (
         <div className="flex flex-col h-full">
             <TabHeader>
                 <TabSearchBox placeholder="Search uploaded images" value={searchValue} onChange={(value) => { setSearchValue(value) }} />
-                <div className="flex gap-1.5">
-                    <div className="relative grow-1">
-                        <label htmlFor="uploadImage">
-                            <h2 className="px-2 text-sm h-10 leading-10 flex items-center justify-center bg-primary rounded-md cursor-pointer">
-                                {loading ? (
-                                    <>
-                                        <IconLoaderQuarter className="animate-spin" />
-                                        <span className="ml-2">Uploading</span>
-                                    </>
-                                ) : (
-                                    "Upload Image"
-                                )}
-                            </h2>
-                        </label>
-                        <input
-                            id="uploadImage"
-                            className="hidden"
-                            type="file"
-                            ref={fileInputRef}
-                            multiple={false}
-                            onChange={handleUpload}
-                        />
-                    </div>
-                    <Button size="icon" className="p-0 shrink-0 h-10 w-10 text-white cursor-pointer">
-                        <IconDots className="size-5" />
-                    </Button>
-                </div>
+                <UploadButton loading={loading} fileInputRef={fileInputRef} handleUpload={handleUpload} />
             </TabHeader>
-            <div className="grow overflow-y-auto"></div>
+            <div className="grow overflow-y-auto p-4 pt-0 space-y-2">
+                {hasGroupedRows && groupedRows.map((row, rowIndex) => {
+                    return (
+                        <div key={rowIndex} className="flex gap-2 w-full overflow-hidden">
+                            {row.map((photo: any) =>
+                                <PhotoItem key={photo._id} uploadedPhoto={photo} rowLength={row.length} />
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     )
 }

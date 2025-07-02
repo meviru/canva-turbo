@@ -26,4 +26,4 @@ export const uploadService = createApi({
   }),
 });
 
-export const { useUploadFileMutation, useLazyListFilesQuery } = uploadService;
+export const { useUploadFileMutation, useListFilesQuery } = uploadService;
