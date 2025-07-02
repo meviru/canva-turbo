@@ -16,7 +16,14 @@ export const uploadService = createApi({
       }),
       invalidatesTags: ["Upload"],
     }),
+    listFiles: builder.query<any, any>({
+      query: ({ userId }) => ({
+        url: `/${userId}/`,
+        method: "GET",
+      }),
+      providesTags: ["Upload"],
+    }),
   }),
 });
 
-export const { useUploadFileMutation } = uploadService;
+export const { useUploadFileMutation, useLazyListFilesQuery } = uploadService;

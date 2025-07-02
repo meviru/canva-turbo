@@ -33,7 +33,7 @@ export default function RootLayout({
           <StackProvider app={stackServerApp}>
             <StackTheme>
               {children}
-              <Toaster />
+              <Toaster richColors />
             </StackTheme>
           </StackProvider>
         </StoreProvider>

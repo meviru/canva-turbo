@@ -1,23 +1,26 @@
+import { Button } from "@/components/ui/button";
+import { useLazyListFilesQuery, useUploadFileMutation } from "@/services/upload.service";
+import { IconDots, IconLoaderQuarter } from "@tabler/icons-react";
 import { useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
 import TabHeader from "./TabHeader";
 import TabSearchBox from "./TabSearchBox";
-import { IconDots, IconLoaderQuarter } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
-import { useParams } from "next/navigation";
-import { toast } from "sonner";
-import { useUploadFileMutation } from "@/services/upload.service";
 
 const UploadsTab = () => {
-    const { designId } = useParams<any>();
+    const user = useSelector((state: any) => state.user);
     const [searchValue, setSearchValue] = useState('');
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploadFile] = useUploadFileMutation();
+    const [listFiles] = useLazyListFilesQuery();
 
     const handleUpload = async () => {
         const fileInput = fileInputRef.current;
         if (!fileInput || !fileInput.files?.length) {
-            toast("Please select a file to upload");
+            toast("Please select a file to upload", {
+                position: "top-right",
+            });
             return;
         }
 
@@ -25,17 +28,22 @@ const UploadsTab = () => {
         const file: any = fileInput.files[0];
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("designId", designId);
+        formData.append("userId", user._id as string);
         try {
             const response = await uploadFile({ formData }).unwrap();
-            toast.success("File uploaded successfully");
+            toast.success("File uploaded successfully", {
+                position: "top-right",
+            });
             fileInputRef.current!.value = '';
             console.log("Upload response:", response);
         } catch (error) {
-            toast.error("File upload failed");
+            toast.error("File upload failed", {
+                position: "top-right",
+            });
             console.error("Upload error:", error);
         } finally {
             setLoading(false);
+            listFiles({ userId: user._id as string })
         }
     };
 
