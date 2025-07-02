@@ -30,6 +30,8 @@ export const uploadImage = async (req: Request, res: Response) => {
       fileType: req.file.mimetype,
       name: req.file.originalname,
       size: req.file.size,
+      width: uploadResponse.width,
+      height: uploadResponse.height,
       uploadedBy,
       projectId,
       userId,

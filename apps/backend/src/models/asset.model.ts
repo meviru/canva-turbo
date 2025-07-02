@@ -7,6 +7,8 @@ const assetSchema = new mongoose.Schema(
     fileType: String,
     name: String,
     size: Number,
+    width: Number,
+    height: Number,
     uploadedBy: String,
     projectId: String,
     userId: {
