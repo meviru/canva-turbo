@@ -12,12 +12,12 @@ export const getUploadAuthParams = (req: Request, res: Response) => {
 };
 export const uploadImage = async (req: Request, res: Response) => {
   try {
-    if (!req.file)
+    const { projectId, uploadedBy, metadata, userId } = req.body;
+    if (!req.file) {
       return res
         .status(400)
         .json({ success: false, message: "No file uploaded" });
-
-    const { projectId, uploadedBy, metadata } = req.body;
+    }
 
     const uploadResponse = await imagekit.upload({
       file: req.file.buffer,
@@ -32,12 +32,29 @@ export const uploadImage = async (req: Request, res: Response) => {
       size: req.file.size,
       uploadedBy,
       projectId,
-      layerMeta: metadata ? JSON.parse(metadata) : undefined,
+      userId,
+      metadata: metadata ? JSON.parse(metadata) : undefined,
     });
 
     res.status(201).json({ success: true, data: asset });
   } catch (error) {
     console.error("Upload error:", error);
     res.status(500).json({ success: false, message: "Failed to upload image" });
+  }
+};
+
+export const listImages = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId as string;
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User ID is required" });
+    }
+    const assets = await Asset.find({ userId }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: assets });
+  } catch (error) {
+    console.error("List images error:", error);
+    res.status(500).json({ success: false, message: "Failed to list images" });
   }
 };
