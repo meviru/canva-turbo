@@ -4,13 +4,14 @@ import clsx from "clsx";
 import React, { useState } from "react";
 
 interface PhotoItemProps {
-    photo: any;
+    photo?: any;
+    uploadedPhoto?: any;
     rowLength: number;
 }
 
-const PhotoItem: React.FC<PhotoItemProps> = ({ photo, rowLength }) => {
+const PhotoItem: React.FC<PhotoItemProps> = ({ photo, uploadedPhoto, rowLength }) => {
     const [isLoaded, setIsLoaded] = useState(false);
-    const isLandscape = photo.width > photo.height;
+    const isLandscape = uploadedPhoto ? uploadedPhoto.width > uploadedPhoto.height : photo.width > photo.height;
 
     // Dynamic height
     let height = 160;
@@ -33,8 +34,8 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, rowLength }) => {
             }}
         >
             <img
-                src={photo.urls.small}
-                alt={photo.alt_description || "photo"}
+                src={uploadedPhoto ? uploadedPhoto.url : photo.urls.small}
+                alt={uploadedPhoto ? uploadedPhoto.name : photo.alt_description || "photo"}
                 loading="lazy"
                 onLoad={() => setIsLoaded(true)}
                 className={clsx(
