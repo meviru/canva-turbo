@@ -8,11 +8,11 @@ export const photosService = createApi({
   ),
   tagTypes: ["Photos"],
   endpoints: (builder) => ({
-    getPhotos: builder.query<any, void>({
-      query: (q) => ({
+    getPhotos: builder.query<any, any>({
+      query: ({ q, page, perPage = 30 }) => ({
         url: "/list",
         method: "GET",
-        params: { q },
+        params: { q, page, perPage },
       }),
       providesTags: ["Photos"],
     }),
