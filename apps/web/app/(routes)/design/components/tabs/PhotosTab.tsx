@@ -1,21 +1,9 @@
 import PhotoItem from "@/components/ui/photo-item";
 import { useGroupedPhotos } from "@/hooks/useGroupedPhotos";
 import { useGetPhotosQuery } from "@/services/photos.service";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import TabHeader from "./TabHeader";
 import TabSearchBox from "./TabSearchBox";
-
-// Custom throttle without lodash
-function throttle(fn: () => void, delay: number) {
-    let lastCall = 0;
-    return () => {
-        const now = Date.now();
-        if (now - lastCall >= delay) {
-            lastCall = now;
-            fn();
-        }
-    };
-}
 
 const PhotosTab = () => {
     const [searchValue, setSearchValue] = useState("");
@@ -24,27 +12,23 @@ const PhotosTab = () => {
     const [photos, setPhotos] = useState<any[]>([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+
     const [isFetchingMore, setIsFetchingMore] = useState(false);
+    const [isInitialLoaded, setIsInitialLoaded] = useState(false);
+    const [ready, setReady] = useState(false);
 
-    const { data, isLoading } = useGetPhotosQuery(
-        { q: debouncedSearch, page, perPage: 30 },
-        {
-            skip: debouncedSearch && debouncedSearch.length < 3,
-        }
-    );
-
-    useEffect(() => {
-        if (data?.results) {
-            setPhotos(prev =>
-                page === 1 ? data.results : [...prev, ...data.results]
-            );
-            setTotalPages(data.total_pages || 1);
-            setIsFetchingMore(false);
-        }
-    }, [data, page]);
-
-    const groupedRows = useGroupedPhotos(photos);
     const containerRef = useRef<HTMLDivElement | null>(null);
+    const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+    const queryParams = useMemo(() => ({
+        q: debouncedSearch,
+        page,
+        perPage: 30,
+    }), [debouncedSearch, page]);
+
+    const { data, isLoading } = useGetPhotosQuery(queryParams, {
+        skip: debouncedSearch && debouncedSearch.length < 3,
+    });
 
     // Debounce search input
     useEffect(() => {
@@ -57,35 +41,61 @@ const PhotosTab = () => {
     // Reset on new search
     useEffect(() => {
         if (debouncedSearch) {
-            setPage(1);
             setPhotos([]);
+            setPage(1);
             setTotalPages(1);
+            setIsInitialLoaded(false);
+            setReady(false);
         }
     }, [debouncedSearch]);
 
-    // Infinite scroll with throttle
+    // Update photos on data load
     useEffect(() => {
-        const handleScroll = throttle(() => {
-            const container = containerRef.current;
-            if (
-                !container ||
-                isLoading ||
-                isFetchingMore ||
-                page >= totalPages
-            )
-                return;
-
-            const { scrollTop, scrollHeight, clientHeight } = container;
-            if (scrollTop + clientHeight >= scrollHeight - 100) {
-                setIsFetchingMore(true);
-                setPage(prev => prev + 1);
+        if (data?.results) {
+            if (page === 1) {
+                setPhotos(data.results);
+                setIsInitialLoaded(true);
+                setReady(true);
+            } else {
+                setPhotos(prev => [...prev, ...data.results]);
             }
-        }, 300);
+            setTotalPages(data.total_pages || 1);
+            setIsFetchingMore(false);
+        }
+    }, [data, page]);
 
+    // Infinite scroll using IntersectionObserver
+    useEffect(() => {
+        const sentinel = loadMoreRef.current;
         const container = containerRef.current;
-        container?.addEventListener("scroll", handleScroll);
-        return () => container?.removeEventListener("scroll", handleScroll);
-    }, [isLoading, isFetchingMore, page, totalPages]);
+        if (!sentinel || !container) return;
+
+        const observer = new IntersectionObserver(
+            (entries: any) => {
+                if (
+                    entries[0].isIntersecting &&
+                    isInitialLoaded &&
+                    !isLoading &&
+                    !isFetchingMore &&
+                    page < totalPages &&
+                    ready
+                ) {
+                    setIsFetchingMore(true);
+                    setPage(prev => prev + 1);
+                }
+            },
+            {
+                root: container,
+                rootMargin: "0px",
+                threshold: 1.0,
+            }
+        );
+
+        observer.observe(sentinel);
+        return () => observer.disconnect();
+    }, [isLoading, isFetchingMore, page, totalPages, ready, isInitialLoaded]);
+
+    const groupedRows = useGroupedPhotos(photos);
 
     return (
         <div className="flex flex-col h-full">
@@ -105,6 +115,16 @@ const PhotosTab = () => {
                         ))}
                     </div>
                 ))}
+
+                {/* Spinner while fetching more */}
+                {isFetchingMore && (
+                    <div className="flex justify-center py-4">
+                        <div className="h-6 w-6 border-2 border-t-transparent border-gray-500 rounded-full animate-spin" />
+                    </div>
+                )}
+
+                {/* Sentinel */}
+                <div ref={loadMoreRef} className="h-10" />
             </div>
         </div>
     );
