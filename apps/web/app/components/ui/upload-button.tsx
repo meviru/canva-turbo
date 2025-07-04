@@ -6,7 +6,7 @@ const UploadButton = ({ loading, fileInputRef, handleUpload }: any) => {
         <div className="flex gap-1.5 mb-3">
             <div className="relative grow-1">
                 <label htmlFor="uploadImage">
-                    <h2 className="px-2 text-sm h-10 leading-10 flex items-center justify-center bg-primary rounded-md cursor-pointer">
+                    <h2 className="px-2 text-sm h-10 leading-10 text-white flex items-center justify-center bg-primary rounded-md cursor-pointer">
                         {loading ? (
                             <>
                                 <IconLoaderQuarter className="animate-spin" />
