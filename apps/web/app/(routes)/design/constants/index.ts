@@ -1,14 +1,13 @@
 import { Separator } from "@/components/ui/separator";
 import {
   IconBackground,
-  IconClipboardTypography,
-  IconClipboardTypographyFilled,
   IconCloud,
   IconCloudCheck,
   IconCloudUpload,
   IconDownload,
   IconEye,
   IconFrame,
+  IconLetterT,
   IconMessageCircle,
   IconPencil,
   IconPhoto,
@@ -20,7 +19,7 @@ import {
   IconSparkles,
   IconTable,
   IconTableFilled,
-  IconTrash
+  IconTrash,
 } from "@tabler/icons-react";
 
 export const fileMenuItems = [
@@ -87,13 +86,13 @@ export const sideBarMenu = [
     name: "Elements",
     icon: IconSortAscendingShapes,
     iconFilled: IconSortAscendingShapesFilled,
-    iconColor: "#4a53fa",
+    iconColor: "#fa5ca3",
   },
   {
     name: "Text",
-    icon: IconClipboardTypography,
-    iconFilled: IconClipboardTypographyFilled,
-    iconColor: "#992bff",
+    icon: IconLetterT,
+    iconFilled: IconLetterT,
+    iconColor: "#fcba03",
   },
   {
     name: "Uploads",
@@ -125,4 +124,10 @@ export const sideBarMenu = [
     iconFilled: IconSettingsFilled,
     iconColor: "#138eff",
   },
+];
+
+export const textSizeOptions = [
+  { name: "Add a heading", bold: "bold", size: "3xl" },
+  { name: "Add a subheading", bold: "semibold", size: "2xl" },
+  { name: "Add a little bit of body text", bold: "normal", size: "sm" },
 ];

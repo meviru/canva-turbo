@@ -6,8 +6,6 @@ import {
   IconBrandTiktok,
   IconBrandX,
   IconBrandYoutubeFilled,
-  IconCreditCard,
-  IconCreditCardFilled,
   IconFileFilled,
   IconFolder,
   IconFolderFilled,
@@ -19,7 +17,7 @@ import {
   IconSortDescendingShapesFilled,
   IconSparkles,
   IconTable,
-  IconTableFilled,
+  IconTableFilled
 } from "@tabler/icons-react";
 
 export const workspaceMenuItems = [
