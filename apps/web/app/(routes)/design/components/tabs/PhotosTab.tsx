@@ -70,26 +70,16 @@ const PhotosTab = () => {
         const container = containerRef.current;
         if (!sentinel || !container) return;
 
-        const observer = new IntersectionObserver(
-            (entries: any) => {
-                if (
-                    entries[0].isIntersecting &&
-                    isInitialLoaded &&
-                    !isLoading &&
-                    !isFetchingMore &&
-                    page < totalPages &&
-                    ready
-                ) {
-                    setIsFetchingMore(true);
-                    setPage(prev => prev + 1);
-                }
-            },
-            {
-                root: container,
-                rootMargin: "0px",
-                threshold: 1.0,
+        const observer = new IntersectionObserver((entries: any) => {
+            if (entries[0].isIntersecting && isInitialLoaded && !isLoading && !isFetchingMore && page < totalPages && ready) {
+                setIsFetchingMore(true);
+                setPage(prev => prev + 1);
             }
-        );
+        }, {
+            root: container,
+            rootMargin: "0px",
+            threshold: 1.0,
+        });
 
         observer.observe(sentinel);
         return () => observer.disconnect();
