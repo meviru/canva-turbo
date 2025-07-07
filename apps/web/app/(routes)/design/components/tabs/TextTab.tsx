@@ -14,13 +14,13 @@ const TextTab = () => {
             <div className="grow overflow-y-auto p-4 pt-0 ">
                 <ul className="space-y-2">
                     <li className="text-sm font-semibold mb-3 text-gray-800 dark:text-white/90">Default text styles</li>
-                    {textSizeOptions.map((size) => {
-                        return <li className={clsx(
+                    {textSizeOptions.map((option, index) => {
+                        return <li key={index} className={clsx(
                             "p-3 rounded-md cursor-pointer border transition-colors",
                             "border-gray-300 dark:border-zinc-600",
                             "hover:bg-zinc-100 dark:hover:bg-zinc-700",
-                            `text-${size.size} font-${size.bold}`
-                        )}>{size.name}</li>
+                            option.fontClass
+                        )}>{option.name}</li>
                     })}
                 </ul>
             </div>
