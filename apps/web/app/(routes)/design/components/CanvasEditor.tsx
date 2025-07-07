@@ -1,13 +1,14 @@
 "use client";
+import { useCanvas } from "@/hooks/useCanvas";
 import { Canvas } from "fabric";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const CanvasEditor = ({ designInfo }: { designInfo: any }) => {
     const canvasRef = useRef<any>(null);
-    const [canvas, setCanvas] = useState(null);
-    /**
-     * Initialize Canvas with default values
-     */
+    const { setCanvas } = useCanvas();
+
+
+    // Initialize canvas
     useEffect(() => {
         if (canvasRef.current && designInfo) {
             const initCanvas = new Canvas(canvasRef.current, {
@@ -25,6 +26,7 @@ const CanvasEditor = ({ designInfo }: { designInfo: any }) => {
             });
 
             initCanvas.renderAll();
+            setCanvas(initCanvas);
 
             return () => {
                 initCanvas.dispose();

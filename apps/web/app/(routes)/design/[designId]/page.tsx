@@ -1,12 +1,13 @@
 "use client";
 
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import CanvasEditor from "../components/CanvasEditor"
-import DesignerHeader from "../components/DesignerHeader"
-import DesignSidebar from "../components/DesignerSidebar"
+import { CanvasProvider } from "@/hooks/useCanvas";
 import { useGetDesignByIdQuery } from "@/services/design.service";
 import { IconPencil } from "@tabler/icons-react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import CanvasEditor from "../components/CanvasEditor";
+import DesignerHeader from "../components/DesignerHeader";
+import DesignSidebar from "../components/DesignerSidebar";
 
 const DesignEditor = () => {
     // Get designId from URL parameters
@@ -36,15 +37,17 @@ const DesignEditor = () => {
     }, [designId, data]);
 
     return (
-        <div className="flex flex-col h-screen bg-gray-100 dark:bg-[#0d1216]">
-            <DesignerHeader user={user} designInfo={designInfo} designerMode={designerMode} setDesignerMode={setDesignerMode} />
-            <div className="flex flex-1 overflow-hidden">
-                <DesignSidebar designerMode={designerMode} />
-                <div className="flex-1 overflow-auto">
-                    <CanvasEditor designInfo={designInfo} />
+        <CanvasProvider>
+            <div className="flex flex-col h-screen bg-gray-100 dark:bg-[#0d1216]">
+                <DesignerHeader user={user} designInfo={designInfo} designerMode={designerMode} setDesignerMode={setDesignerMode} />
+                <div className="flex flex-1 overflow-hidden">
+                    <DesignSidebar designerMode={designerMode} />
+                    <div className="flex-1 overflow-auto">
+                        <CanvasEditor designInfo={designInfo} />
+                    </div>
                 </div>
             </div>
-        </div>
+        </CanvasProvider>
     )
 }
 
