@@ -30,9 +30,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { editMenuItems, fileMenuItems } from "../constants";
+import { useCanvas } from "@/hooks/useCanvas";
 
 const DesignerHeader = ({ user, designInfo, designerMode, setDesignerMode }: { user: any, designInfo: any, designerMode: any, setDesignerMode: any }) => {
     const [designName, setDesignName] = useState(designInfo?.name || "Untitled Design");
+    const { undo, redo, canUndo, canRedo } = useCanvas();
 
     useEffect(() => {
         if (designInfo?.name) {
@@ -121,6 +123,8 @@ const DesignerHeader = ({ user, designInfo, designerMode, setDesignerMode }: { u
                             <Button
                                 size="icon"
                                 variant="ghost"
+                                onClick={() => undo()}
+                                disabled={!canUndo}
                                 className="cursor-pointer border-none text-white transition-colors hover:bg-white/10 hover:text-white dark:hover:bg-white/5"
                             >
                                 <IconArrowBackUp strokeWidth="1.75" className="size-6" />
@@ -128,6 +132,8 @@ const DesignerHeader = ({ user, designInfo, designerMode, setDesignerMode }: { u
                             <Button
                                 size="icon"
                                 variant="ghost"
+                                onClick={() => redo()}
+                                disabled={!canRedo}
                                 className="ml-3 cursor-pointer border-none text-white transition-colors hover:bg-white/10 hover:text-white dark:hover:bg-white/5"
                             >
                                 <IconArrowForwardUp strokeWidth="1.75" className="size-6" />
