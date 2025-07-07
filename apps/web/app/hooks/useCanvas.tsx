@@ -1,11 +1,11 @@
-// apps/web/app/context/canvas-context.tsx
 "use client";
-import { Canvas } from "fabric";
+import { Canvas, IText } from "fabric";
 import { createContext, useContext, useRef, useState } from "react";
 
 type CanvasContextType = {
     canvas: Canvas | null;
     setCanvas: (canvas: Canvas) => void;
+    addText: (text: string, fontSize: number, bold: boolean) => void;
     undo: () => void;
     redo: () => void;
 };
@@ -61,11 +61,24 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         });
     };
 
+    const addText = (text: string, fontSize: number, bold: boolean) => {
+        const textObj = new IText(text, {
+            fontFamily: "Poppins",
+            fontSize: fontSize,
+            fontWeight: bold ? "bold" : "normal",
+            left: 50,
+            top: 50,
+        });
+        canvasRef.current?.add(textObj);
+        canvasRef.current?.setActiveObject(textObj);
+        canvasRef.current?.renderAll();
+    }
+
     // Keep ref in sync with state
     canvasRef.current = canvas;
 
     return (
-        <CanvasContext.Provider value={{ canvas, setCanvas, undo, redo }}>
+        <CanvasContext.Provider value={{ canvas, setCanvas, addText, undo, redo }}>
             {children}
         </CanvasContext.Provider>
     );

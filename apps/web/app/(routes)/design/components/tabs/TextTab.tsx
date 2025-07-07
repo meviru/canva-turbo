@@ -1,6 +1,5 @@
 import { useCanvas } from "@/hooks/useCanvas";
 import clsx from "clsx";
-import * as fabric from "fabric";
 import { useState } from "react";
 import { textSizeOptions } from "../../constants";
 import TabHeader from "./TabHeader";
@@ -8,21 +7,7 @@ import TabSearchBox from "./TabSearchBox";
 
 const TextTab = () => {
     const [searchValue, setSearchValue] = useState('');
-    const { canvas } = useCanvas();
-
-    const addText = (text: string, fontSize: number, bold: boolean) => {
-        if (!canvas) return;
-        const textbox = new fabric.Textbox(text, {
-            fontFamily: "Poppins",
-            fontSize: fontSize,
-            fontWeight: bold ? "bold" : "normal",
-            left: 50,
-            top: 50,
-        });
-        canvas.add(textbox);
-        canvas.setActiveObject(textbox);
-        canvas.renderAll();
-    };
+    const { addText } = useCanvas();
 
     return (
         <div className="flex flex-col h-full">
