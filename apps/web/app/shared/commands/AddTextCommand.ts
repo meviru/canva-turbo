@@ -1,9 +1,5 @@
 import { Canvas, IText } from "fabric";
-
-export interface Command {
-  execute(): void;
-  undo(): void;
-}
+import { Command } from "../models";
 
 export class AddTextCommand implements Command {
   private textObj: IText;
