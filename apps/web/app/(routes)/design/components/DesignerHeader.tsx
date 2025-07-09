@@ -62,16 +62,16 @@ const DesignerHeader = ({ user, designInfo, designerMode, setDesignerMode }: { u
                             <MenubarTrigger className="text-white">File</MenubarTrigger>
                             <MenubarContent className="p-0 w-80 dark:bg-zinc-800">
                                 {fileMenuItems.map((item, index) => (
-                                    <>
+                                    <div key={index}>
                                         {item.name ? (
-                                            <MenubarItem key={index} className="p-2.5 rounded-none text-gray-900 dark:text-white/90 dark:hover:bg-zinc-700 cursor-pointer">
+                                            <MenubarItem className="p-2.5 rounded-none text-gray-900 dark:text-white/90 dark:hover:bg-zinc-700 cursor-pointer">
                                                 <item.icon className="mx-1 size-[24px] text-gray-700 dark:text-white/90" />
                                                 {item.name} <MenubarShortcut className="dark:text-white/50">{item.shortcut}</MenubarShortcut>
                                             </MenubarItem>
                                         ) : (
                                             item.component && <item.component className="my-1.5" />
                                         )}
-                                    </>
+                                    </div>
                                 ))}
                             </MenubarContent>
                         </MenubarMenu>
