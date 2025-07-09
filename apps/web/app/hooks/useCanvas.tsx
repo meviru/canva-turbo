@@ -1,13 +1,14 @@
 "use client";
 import { AddTextCommand } from "@/shared/commands/AddTextCommand";
 import { TransformObjectCommand } from "@/shared/commands/TransformObjectCommand";
+import { applyGlobalHandleStyles, createObjectWithGlobalHandles, initializeGlobalImageHandles } from "@/shared/lib/customControlRenderers";
 import { Command } from "@/shared/models";
 import * as fabric from "fabric";
 import { Canvas } from "fabric";
 import {
     createContext,
     useCallback, useContext, useRef,
-    useState
+    useState, useEffect
 } from "react";
 
 type CanvasContextType = {
@@ -30,6 +31,24 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
     const [canUndo, setCanUndo] = useState(false);
     const [canRedo, setCanRedo] = useState(false);
     const originalProps = useRef<Partial<fabric.Object> | null>(null);
+    const [isHandlesInitialized, setIsHandlesInitialized] = useState(false);
+
+    // Initialize global image handles once when component mounts
+    useEffect(() => {
+        const initHandles = async () => {
+            if (!isHandlesInitialized) {
+                try {
+                    await initializeGlobalImageHandles(fabric);
+                    setIsHandlesInitialized(true);
+                    console.log('Global image handles initialized');
+                } catch (error) {
+                    console.error('Failed to initialize global image handles:', error);
+                }
+            }
+        };
+
+        initHandles();
+    }, [isHandlesInitialized]);
 
     const updateUndoRedoState = () => {
         setCanUndo(undoStack.current.length > 0);
@@ -42,11 +61,27 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         canvasRef.current = newCanvas;
         setCanvasState(newCanvas);
 
+        // Apply global canvas selection styles
+        newCanvas.selectionColor = 'rgba(139, 61, 255, 0.1)';
+        newCanvas.selectionBorderColor = '#8b3dff';
+        newCanvas.selectionLineWidth = 1;
+
+        // Set up event listeners
         newCanvas.on("object:scaling", captureOriginal);
         newCanvas.on("object:moving", captureOriginal);
         newCanvas.on("object:rotating", captureOriginal);
-
         newCanvas.on("object:modified", commitTransform);
+
+        // Apply global handle styles to any existing objects
+        applyGlobalHandleStyles(newCanvas);
+
+        // Listen for object additions to apply handle styles
+        newCanvas.on("object:added", (e) => {
+            const obj = e.target;
+            if (obj && isHandlesInitialized) {
+                createObjectWithGlobalHandles(obj);
+            }
+        });
 
         updateUndoRedoState();
     };
@@ -99,8 +134,10 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
 
     const addText = (text: string, fontSize: number, bold: boolean) => {
         if (!canvasRef.current) return;
+
         const command = new AddTextCommand(canvasRef.current, text, fontSize, bold);
         command.execute();
+
         undoStack.current.push(command);
         redoStack.current = [];
         updateUndoRedoState();
@@ -140,7 +177,6 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         </CanvasContext.Provider>
     );
 };
-
 
 export const useCanvas = () => {
     const context = useContext(CanvasContext);
