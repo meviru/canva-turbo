@@ -11,7 +11,7 @@ let handleImages: any = {
 const HANDLE_CONFIG = {
   corner: { size: 12, hitArea: 12 },
   middle: { size: 14, hitArea: 14 },
-  rotation: { size: 24, hitArea: 24 },
+  rotation: { size: 30, hitArea: 30 },
   rotationOffset: 45,
 };
 
@@ -77,9 +77,7 @@ export const initializeGlobalImageHandles = async (fabric: any) => {
         HANDLE_CONFIG.corner.size
       );
 
-      // Draw middle controls (if not locked)
       if (!this.get("lockUniScaling")) {
-        // Top middle
         this._drawImageControl(
           ctx,
           "mt",
@@ -88,7 +86,6 @@ export const initializeGlobalImageHandles = async (fabric: any) => {
           handleImages.middleTop,
           HANDLE_CONFIG.middle.size
         );
-        // Bottom middle
         this._drawImageControl(
           ctx,
           "mb",
@@ -97,7 +94,6 @@ export const initializeGlobalImageHandles = async (fabric: any) => {
           handleImages.middleBottom,
           HANDLE_CONFIG.middle.size
         );
-        // Left middle
         this._drawImageControl(
           ctx,
           "ml",
@@ -106,7 +102,6 @@ export const initializeGlobalImageHandles = async (fabric: any) => {
           handleImages.middleLeft,
           HANDLE_CONFIG.middle.size
         );
-        // Right middle
         this._drawImageControl(
           ctx,
           "mr",
@@ -117,7 +112,6 @@ export const initializeGlobalImageHandles = async (fabric: any) => {
         );
       }
 
-      // Draw rotation control
       if (this.hasRotatingPoint) {
         this._drawImageControl(
           ctx,
@@ -127,23 +121,13 @@ export const initializeGlobalImageHandles = async (fabric: any) => {
           handleImages.rotation,
           HANDLE_CONFIG.rotation.size
         );
-
-        // Draw connection line from object to rotation handle
-        ctx.strokeStyle = this.borderColor || "#8b3dff";
-        ctx.lineWidth = 1;
-        ctx.setLineDash([2, 2]);
-        ctx.beginPath();
-        ctx.moveTo(centerX * zoom, top * zoom);
-        ctx.lineTo(centerX * zoom, (top - HANDLE_CONFIG.rotationOffset) * zoom);
-        ctx.stroke();
-        ctx.setLineDash([]);
       }
 
       ctx.restore();
       return this;
     };
 
-    // Custom image control drawing method with better positioning
+    // Custom image control drawing method with transparent background
     fabric.Object.prototype._drawImageControl = function (
       ctx: any,
       control: string,
@@ -156,8 +140,6 @@ export const initializeGlobalImageHandles = async (fabric: any) => {
 
       ctx.save();
       ctx.translate(x, y);
-      
-      // Draw the image centered with the specified size
       ctx.drawImage(image, -size / 2, -size / 2, size, size);
 
       ctx.restore();
@@ -186,7 +168,6 @@ export const initializeGlobalImageHandles = async (fabric: any) => {
       borderScaleFactor: 1,
       rotatingPointOffset: HANDLE_CONFIG.rotationOffset,
       hasRotatingPoint: true,
-      borderDashArray: [3, 3],
     });
 
     // Also set canvas selection styles
@@ -201,10 +182,10 @@ export const initializeGlobalImageHandles = async (fabric: any) => {
     fabric.Object.prototype.set({
       cornerStyle: "circle",
       cornerColor: "white",
-      cornerStrokeColor: "#8b3dff",
+      cornerStrokeColor: "#B8B8B8",
       cornerSize: 12,
       transparentCorners: false,
-      borderColor: "#8b3dff",
+      borderColor: "#B8B8B8",
     });
   }
 };
