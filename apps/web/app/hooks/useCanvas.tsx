@@ -96,7 +96,7 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         const initialFontSize = obj.fontSize || 16;
         const scale = (obj.scaleX + obj.scaleY) / 2;
         const newFontSize = Math.max(4, initialFontSize * scale);
-        
+
         obj.set({
             fontSize: newFontSize,
             scaleX: 1,
@@ -125,6 +125,8 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
             originY: obj.originY,
             flipX: obj.flipX,
             flipY: obj.flipY,
+            fontSize: (obj as any).fontSize,
+            ...(obj instanceof fabric.IText && { fontSize: obj.fontSize }),
         };
     };
 
@@ -144,6 +146,8 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
             originY: obj.originY,
             flipX: obj.flipX,
             flipY: obj.flipY,
+            fontSize: (obj as any).fontSize,
+            ...(obj instanceof fabric.IText && { fontSize: obj.fontSize }),
         };
 
         const command = new TransformObjectCommand(obj, originalProps.current, afterProps);

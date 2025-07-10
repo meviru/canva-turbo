@@ -21,6 +21,13 @@ export class TransformObjectCommand implements Command {
       (this.object as any)[key] = value;
     });
 
+    if (
+      "fontSize" in props &&
+      typeof (this.object as any).initDimensions === "function"
+    ) {
+      (this.object as any).initDimensions();
+    }
+
     this.object.setCoords();
 
     if (this.object.canvas) {
