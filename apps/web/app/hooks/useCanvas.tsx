@@ -68,6 +68,9 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
 
         // Set up event listeners
         newCanvas.on("object:scaling", captureOriginal);
+
+        newCanvas.on("object:scaling", resizeText(newCanvas));
+
         newCanvas.on("object:moving", captureOriginal);
         newCanvas.on("object:rotating", captureOriginal);
         newCanvas.on("object:modified", commitTransform);
@@ -84,6 +87,26 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         updateUndoRedoState();
+    };
+
+    const resizeText = (newCanvas: Canvas) => (e: any) => {
+        const obj = e.target;
+        if (!obj || !(obj instanceof fabric.IText)) return;
+
+        const initialFontSize = obj.fontSize || 16;
+        const scale = (obj.scaleX + obj.scaleY) / 2;
+        const newFontSize = Math.max(4, initialFontSize * scale);
+        
+        obj.set({
+            fontSize: newFontSize,
+            scaleX: 1,
+            scaleY: 1,
+            originX: 'center',
+            originY: 'center'
+        });
+
+        obj.setCoords();
+        newCanvas.renderAll();
     };
 
     const captureOriginal = (e: any) => {
