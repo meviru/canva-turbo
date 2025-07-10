@@ -127,7 +127,7 @@ export const sideBarMenu = [
 ];
 
 export const textSizeOptions = [
-  { name: "Add a heading", fontClass: "text-3xl font-bold", fontSize: 36, bold: true },
-  { name: "Add a subheading", fontClass: "text-2xl font-bold", fontSize: 28, bold: true },
-  { name: "Add a little bit of body text", fontClass: "text-sm", fontSize: 16, bold: false },
+  { name: "Add a heading", fontClass: "text-3xl font-bold", fontSize: 46, bold: true },
+  { name: "Add a subheading", fontClass: "text-2xl font-bold", fontSize: 36, bold: true },
+  { name: "Add a little bit of body text", fontClass: "text-sm", fontSize: 26, bold: false },
 ];
