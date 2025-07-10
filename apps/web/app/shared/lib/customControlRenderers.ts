@@ -9,8 +9,8 @@ let handleImages: any = {
 
 // Configuration for handle sizes
 const HANDLE_CONFIG = {
-  corner: { size: 12, hitArea: 12 },
-  middle: { size: 14, hitArea: 14 },
+  corner: { size: 14, hitArea: 14 },
+  middle: { size: 18, hitArea: 18 },
   rotation: { size: 30, hitArea: 30 },
   rotationOffset: 45,
 };
