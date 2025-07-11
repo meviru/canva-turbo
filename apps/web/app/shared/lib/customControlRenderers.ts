@@ -202,7 +202,6 @@ export const applyGlobalHandleStyles = (canvas: any) => {
       borderScaleFactor: 1,
       rotatingPointOffset: HANDLE_CONFIG.rotationOffset,
       hasRotatingPoint: true,
-      borderDashArray: [3, 3],
     });
   });
 
@@ -218,7 +217,6 @@ export const createObjectWithGlobalHandles = (fabricObject: any) => {
     borderScaleFactor: 1,
     rotatingPointOffset: HANDLE_CONFIG.rotationOffset,
     hasRotatingPoint: true,
-    borderDashArray: [3, 3],
   });
 };
 
