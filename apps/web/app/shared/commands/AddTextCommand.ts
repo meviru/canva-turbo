@@ -1,5 +1,6 @@
 import { Canvas, IText } from "fabric";
 import { Command } from "../models";
+import { createObjectWithGlobalHandles } from "../lib/customControlRenderers";
 
 export class AddTextCommand implements Command {
   private textObj: IText;
@@ -23,6 +24,7 @@ export class AddTextCommand implements Command {
 
   execute() {
     this.canvas.add(this.textObj);
+    createObjectWithGlobalHandles(this.textObj);
     this.canvas.setActiveObject(this.textObj);
     this.canvas.renderAll();
   }
