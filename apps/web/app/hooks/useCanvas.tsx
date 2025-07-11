@@ -1,20 +1,25 @@
 "use client";
 import { AddTextCommand } from "@/shared/commands/AddTextCommand";
+import { DeleteObjectCommand } from "@/shared/commands/DeleteObjectCommand";
 import { TransformObjectCommand } from "@/shared/commands/TransformObjectCommand";
 import { applyGlobalHandleStyles, createObjectWithGlobalHandles, initializeGlobalImageHandles } from "@/shared/lib/customControlRenderers";
+import { ExtendedCanvas } from "@/shared/lib/fabric-extended";
 import { Command } from "@/shared/models";
 import * as fabric from "fabric";
 import { Canvas } from "fabric";
 import {
     createContext,
-    useCallback, useContext, useRef,
-    useState, useEffect
+    useCallback, useContext,
+    useEffect,
+    useRef,
+    useState
 } from "react";
 
 type CanvasContextType = {
-    canvas: Canvas | null;
-    setCanvas: (canvas: Canvas) => void;
+    canvas: ExtendedCanvas | null;
+    setCanvas: (canvas: ExtendedCanvas) => void;
     addText: (text: string, fontSize: number, bold: boolean) => void;
+    deleteObject: (obj: fabric.Object) => void;
     undo: () => void;
     redo: () => void;
     canUndo: boolean;
@@ -55,6 +60,17 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         setCanRedo(redoStack.current.length > 0);
     };
 
+    const deleteObject = useCallback((obj: fabric.Object) => {
+        if (!canvasRef.current) return;
+
+        const command = new DeleteObjectCommand(canvasRef.current, obj);
+        command.execute();
+
+        undoStack.current.push(command);
+        redoStack.current = [];
+        updateUndoRedoState();
+    }, []);
+
     const setCanvas = (newCanvas: Canvas) => {
         if (canvasRef.current) canvasRef.current.off();
 
@@ -66,11 +82,12 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         newCanvas.selectionBorderColor = '#8b3dff';
         newCanvas.selectionLineWidth = 1;
 
+        // Add custom delete handler to canvas
+        (newCanvas as any).onDeleteObject = deleteObject;
+
         // Set up event listeners
         newCanvas.on("object:scaling", captureOriginal);
-
         newCanvas.on("object:scaling", resizeText(newCanvas));
-
         newCanvas.on("object:moving", captureOriginal);
         newCanvas.on("object:rotating", captureOriginal);
         newCanvas.on("object:modified", commitTransform);
@@ -194,6 +211,7 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
                 canvas,
                 setCanvas,
                 addText,
+                deleteObject,
                 undo,
                 redo,
                 canUndo,
