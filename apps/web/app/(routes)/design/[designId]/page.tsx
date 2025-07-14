@@ -43,7 +43,7 @@ const DesignEditor = () => {
                 <div className="flex flex-1 overflow-hidden">
                     <DesignSidebar designerMode={designerMode} />
                     <div className="flex-1 overflow-auto">
-                        <CanvasEditor designInfo={designInfo} />
+                        <CanvasEditor designInfo={designInfo} designerMode={designerMode} />
                     </div>
                 </div>
             </div>

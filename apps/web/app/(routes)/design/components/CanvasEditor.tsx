@@ -3,10 +3,9 @@ import { useCanvas } from "@/hooks/useCanvas";
 import { Canvas } from "fabric";
 import { useEffect, useRef } from "react";
 
-const CanvasEditor = ({ designInfo }: { designInfo: any }) => {
+const CanvasEditor = ({ designInfo, designerMode }: { designInfo: any, designerMode: any }) => {
     const canvasRef = useRef<any>(null);
-    const { setCanvas } = useCanvas();
-
+    const { canvas, setCanvas } = useCanvas();
 
     // Initialize canvas
     useEffect(() => {
@@ -33,6 +32,31 @@ const CanvasEditor = ({ designInfo }: { designInfo: any }) => {
             }
         }
     }, [designInfo]);
+
+    // Disable canvas interaction when designerMode is "Viewing" or "Commenting"
+    useEffect(() => {
+        if (!canvas) return;
+
+        const isReadOnly = designerMode.name === "Viewing" || designerMode.name === "Commenting";
+
+        // Disable canvas interaction
+        canvas.selection = !isReadOnly;
+        canvas.skipTargetFind = isReadOnly;
+        canvas.forEachObject((obj) => {
+            obj.selectable = !isReadOnly;
+            obj.evented = !isReadOnly;
+            obj.hasControls = !isReadOnly;
+            obj.lockMovementX = isReadOnly;
+            obj.lockMovementY = isReadOnly;
+            obj.lockScalingX = isReadOnly;
+            obj.lockScalingY = isReadOnly;
+            obj.lockRotation = isReadOnly;
+        });
+
+        canvas.discardActiveObject();
+        canvas.requestRenderAll();
+    }, [designerMode, canvas]);
+
     return (
         <div className="p-10 flex flex-col items-center justify-center min-h-full">
             <canvas id="canvas" ref={canvasRef}></canvas>
