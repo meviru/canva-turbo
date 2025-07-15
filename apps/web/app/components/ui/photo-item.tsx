@@ -7,9 +7,10 @@ interface PhotoItemProps {
     photo?: any;
     uploadedPhoto?: any;
     rowLength: number;
+    addImage: (imageUrl: string) => Promise<void>;
 }
 
-const PhotoItem: React.FC<PhotoItemProps> = ({ photo, uploadedPhoto, rowLength }) => {
+const PhotoItem: React.FC<PhotoItemProps> = ({ photo, uploadedPhoto, rowLength, addImage }) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const isLandscape = uploadedPhoto ? uploadedPhoto.width > uploadedPhoto.height : photo.width > photo.height;
 
@@ -38,6 +39,7 @@ const PhotoItem: React.FC<PhotoItemProps> = ({ photo, uploadedPhoto, rowLength }
                 alt={uploadedPhoto ? uploadedPhoto.name : photo.alt_description || "photo"}
                 loading="lazy"
                 onLoad={() => setIsLoaded(true)}
+                onClick={() => uploadedPhoto ? addImage(uploadedPhoto.url) : addImage(photo.urls.full)}
                 className={clsx(
                     "w-full h-full object-cover transition-opacity duration-300",
                     isLoaded ? "opacity-100" : "opacity-0"

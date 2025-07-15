@@ -8,6 +8,7 @@ import TabHeader from "./TabHeader";
 import TabSearchBox from "./TabSearchBox";
 import { useGroupedPhotos } from "@/hooks/useGroupedPhotos";
 import PhotoItem from "@/components/ui/photo-item";
+import { useCanvas } from "@/hooks/useCanvas";
 
 const UploadsTab = () => {
     const user = useSelector((state: any) => state.user);
@@ -19,6 +20,8 @@ const UploadsTab = () => {
     const { data: filesData } = useListFilesQuery({ userId: user._id }, {
         skip: !user._id
     });
+
+    const { addImage } = useCanvas();
 
     const files = useGroupedPhotos(filesData?.data);
 
@@ -70,7 +73,7 @@ const UploadsTab = () => {
                     return (
                         <div key={rowIndex} className="flex gap-2 w-full overflow-hidden">
                             {row.map((photo: any) =>
-                                <PhotoItem key={photo._id} uploadedPhoto={photo} rowLength={row.length} />
+                                <PhotoItem key={photo._id} uploadedPhoto={photo} addImage={addImage} rowLength={row.length} />
                             )}
                         </div>
                     );

@@ -4,6 +4,7 @@ import { useGetPhotosQuery } from "@/services/photos.service";
 import { useEffect, useMemo, useRef, useState } from "react";
 import TabHeader from "./TabHeader";
 import TabSearchBox from "./TabSearchBox";
+import { useCanvas } from "@/hooks/useCanvas";
 
 const PhotosTab = () => {
     const [searchValue, setSearchValue] = useState("");
@@ -19,6 +20,8 @@ const PhotosTab = () => {
 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+    const { addImage } = useCanvas();
 
     const queryParams = useMemo(() => ({
         q: debouncedSearch,
@@ -101,7 +104,7 @@ const PhotosTab = () => {
                 {groupedRows.map((row, rowIndex) => (
                     <div key={rowIndex} className="flex gap-2 w-full overflow-hidden">
                         {row.map((photo) => (
-                            <PhotoItem key={photo.id} photo={photo} rowLength={row.length} />
+                            <PhotoItem key={photo.id} photo={photo} addImage={addImage} rowLength={row.length} />
                         ))}
                     </div>
                 ))}
