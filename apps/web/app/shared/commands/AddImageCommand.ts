@@ -17,13 +17,23 @@ export class AddImageCommand implements Command {
         crossOrigin: "anonymous",
       });
 
+      const canvasWidth = this.canvas.getWidth();
+      const canvasHeight = this.canvas.getHeight();
+
+      const maxWidth = canvasWidth * 0.7;
+      const maxHeight = canvasHeight * 0.7;
+
+      const scaleX = maxWidth / img.width!;
+      const scaleY = maxHeight / img.height!;
+      const scale = Math.min(scaleX, scaleY, 1);
+
       img.set({
-        left: this.canvas.getWidth() / 2,
-        top: this.canvas.getHeight() / 2,
+        left: canvasWidth / 2,
+        top: canvasHeight / 2,
         originX: "center",
         originY: "center",
-        scaleX: 0.5,
-        scaleY: 0.5,
+        scaleX: scale,
+        scaleY: scale,
       });
 
       createObjectWithGlobalHandles(img);
