@@ -1,4 +1,5 @@
 "use client";
+import { AddImageCommand } from "@/shared/commands/AddImageCommand";
 import { AddTextCommand } from "@/shared/commands/AddTextCommand";
 import { DeleteObjectCommand } from "@/shared/commands/DeleteObjectCommand";
 import { TransformObjectCommand } from "@/shared/commands/TransformObjectCommand";
@@ -19,6 +20,7 @@ type CanvasContextType = {
     canvas: ExtendedCanvas | null;
     setCanvas: (canvas: ExtendedCanvas) => void;
     addText: (text: string, fontSize: number, bold: boolean) => void;
+    addImage: (imageUrl: string) => Promise<void>;
     deleteObject: (obj: fabric.Object) => void;
     undo: () => void;
     redo: () => void;
@@ -187,6 +189,17 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         updateUndoRedoState();
     };
 
+    const addImage = async (imageUrl: string) => {
+        if (!canvas) return;
+
+        const command = new AddImageCommand(canvas, imageUrl);
+        await command.execute();
+
+        undoStack.current.push(command);
+        redoStack.current = [];
+        updateUndoRedoState();
+    };
+
     const undo = useCallback(() => {
         const cmd = undoStack.current.pop();
         if (cmd) {
@@ -211,6 +224,7 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
                 canvas,
                 setCanvas,
                 addText,
+                addImage,
                 deleteObject,
                 undo,
                 redo,
