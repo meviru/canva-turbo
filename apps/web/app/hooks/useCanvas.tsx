@@ -76,6 +76,9 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
     const setCanvas = (newCanvas: Canvas) => {
         if (canvasRef.current) canvasRef.current.off();
 
+        // Fix canvas dimensions first
+        fixCanvasDimensions(newCanvas);
+
         canvasRef.current = newCanvas;
         setCanvasState(newCanvas);
 
@@ -106,6 +109,31 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         updateUndoRedoState();
+    };
+
+    const fixCanvasDimensions = (canvas: Canvas) => {
+        const canvasElement = canvas.getElement();
+        const container = canvasElement.parentElement;
+
+        if (container) {
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+
+            // Update canvas dimensions to match container
+            canvas.setWidth(containerWidth);
+            canvas.setHeight(containerHeight);
+
+            // Update HTML element dimensions
+            canvasElement.width = containerWidth;
+            canvasElement.height = containerHeight;
+
+            // Update CSS dimensions
+            canvasElement.style.width = `${containerWidth}px`;
+            canvasElement.style.height = `${containerHeight}px`;
+
+            // Re-render the canvas
+            canvas.renderAll();
+        }
     };
 
     const resizeText = (newCanvas: Canvas) => (e: any) => {
