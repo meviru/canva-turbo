@@ -14,13 +14,18 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     const hasSaved = useRef(false);
 
     useEffect(() => {
-        if (!hasSaved.current) {
+        if (user && !hasSaved.current) {
             hasSaved.current = true;
             saveUserInfo(user);
         }
     }, [user, saveUser]);
 
     const saveUserInfo = async (user: any) => {
+        if (!user || !user.id) {
+            console.warn("User is null or missing required properties");
+            return;
+        }
+
         try {
             const savedUser = await saveUser({
                 authId: user.id,
