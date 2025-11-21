@@ -5,15 +5,17 @@ import { DeleteObjectCommand } from "@/shared/commands/DeleteObjectCommand";
 import { TransformObjectCommand } from "@/shared/commands/TransformObjectCommand";
 import { applyGlobalHandleStyles, createObjectWithGlobalHandles, initializeGlobalImageHandles } from "@/shared/lib/customControlRenderers";
 import { ExtendedCanvas } from "@/shared/lib/fabric-extended";
-import { Command } from "@/shared/models";
+import type { Command, FabricCanvas, FabricObject } from "@/shared/models";
 import * as fabric from "fabric";
 import { Canvas } from "fabric";
 import {
     createContext,
-    useCallback, useContext,
+    useCallback, 
+    useContext,
     useEffect,
     useRef,
-    useState
+    useState,
+    useMemo
 } from "react";
 
 type CanvasContextType = {
@@ -21,7 +23,7 @@ type CanvasContextType = {
     setCanvas: (canvas: ExtendedCanvas) => void;
     addText: (text: string, fontSize: number, bold: boolean) => void;
     addImage: (imageUrl: string) => Promise<void>;
-    deleteObject: (obj: fabric.Object) => void;
+    deleteObject: (obj: FabricObject) => void;
     undo: () => void;
     redo: () => void;
     canUndo: boolean;
@@ -37,17 +39,21 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
     const redoStack = useRef<Command[]>([]);
     const [canUndo, setCanUndo] = useState(false);
     const [canRedo, setCanRedo] = useState(false);
-    const originalProps = useRef<Partial<fabric.Object> | null>(null);
+    const originalProps = useRef<Partial<FabricObject> | null>(null);
     const [isHandlesInitialized, setIsHandlesInitialized] = useState(false);
 
     // Initialize global image handles once when component mounts
     useEffect(() => {
+        let isMounted = true;
+        
         const initHandles = async () => {
-            if (!isHandlesInitialized) {
+            if (!isHandlesInitialized && isMounted) {
                 try {
                     await initializeGlobalImageHandles(fabric);
-                    setIsHandlesInitialized(true);
-                    console.log('Global image handles initialized');
+                    if (isMounted) {
+                        setIsHandlesInitialized(true);
+                        console.log('Global image handles initialized');
+                    }
                 } catch (error) {
                     console.error('Failed to initialize global image handles:', error);
                 }
@@ -55,7 +61,11 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         };
 
         initHandles();
-    }, [isHandlesInitialized]);
+        
+        return () => {
+            isMounted = false;
+        };
+    }, []); // Remove isHandlesInitialized from dependencies
 
     const updateUndoRedoState = () => {
         setCanUndo(undoStack.current.length > 0);
@@ -73,7 +83,95 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         updateUndoRedoState();
     }, []);
 
-    const setCanvas = (newCanvas: Canvas) => {
+    // Define helper functions first before setCanvas
+    const fixCanvasDimensions = useCallback((canvas: Canvas) => {
+        const canvasElement = canvas.getElement();
+        const container = canvasElement.parentElement;
+
+        if (container) {
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+
+            // Update CSS dimensions
+            canvasElement.style.width = `${containerWidth}px`;
+            canvasElement.style.height = `${containerHeight}px`;
+
+            // Re-render the canvas
+            canvas.renderAll();
+        }
+    }, []);
+
+    const resizeText = useCallback((newCanvas: Canvas) => (e: any) => {
+        const obj = e.target;
+        if (!obj || !(obj instanceof fabric.IText)) return;
+
+        const initialFontSize = obj.fontSize || 16;
+        const scale = (obj.scaleX + obj.scaleY) / 2;
+        const newFontSize = Math.max(4, initialFontSize * scale);
+
+        obj.set({
+            fontSize: newFontSize,
+            scaleX: 1,
+            scaleY: 1,
+            originX: 'center',
+            originY: 'center'
+        });
+
+        obj.setCoords();
+        newCanvas.renderAll();
+    }, []);
+
+    const captureOriginal = useCallback((e: any) => {
+        const obj = e.target;
+        if (!obj || originalProps.current) return;
+
+        originalProps.current = {
+            left: obj.left,
+            top: obj.top,
+            scaleX: obj.scaleX,
+            scaleY: obj.scaleY,
+            angle: obj.angle,
+            skewX: obj.skewX,
+            skewY: obj.skewY,
+            originX: obj.originX,
+            originY: obj.originY,
+            flipX: obj.flipX,
+            flipY: obj.flipY,
+            fontSize: (obj as any).fontSize,
+            ...(obj instanceof fabric.IText && { fontSize: obj.fontSize }),
+        };
+    }, []);
+
+    const commitTransform = useCallback((e: any) => {
+        const obj = e.target;
+        if (!obj || !originalProps.current) return;
+
+        const afterProps: Partial<fabric.Object> = {
+            left: obj.left,
+            top: obj.top,
+            scaleX: obj.scaleX,
+            scaleY: obj.scaleY,
+            angle: obj.angle,
+            skewX: obj.skewX,
+            skewY: obj.skewY,
+            originX: obj.originX,
+            originY: obj.originY,
+            flipX: obj.flipX,
+            flipY: obj.flipY,
+            fontSize: (obj as any).fontSize,
+            ...(obj instanceof fabric.IText && { fontSize: obj.fontSize }),
+        };
+
+        const command = new TransformObjectCommand(obj, originalProps.current, afterProps);
+
+        undoStack.current.push(command);
+        redoStack.current = [];
+        originalProps.current = null;
+
+        updateUndoRedoState();
+    }, []);
+
+    const setCanvas = useCallback((newCanvas: Canvas) => {
         if (canvasRef.current) canvasRef.current.off();
 
         // Fix canvas dimensions first
@@ -109,102 +207,7 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         updateUndoRedoState();
-    };
-
-    const fixCanvasDimensions = (canvas: Canvas) => {
-        const canvasElement = canvas.getElement();
-        const container = canvasElement.parentElement;
-
-        if (container) {
-            const containerWidth = container.offsetWidth;
-            const containerHeight = container.offsetHeight;
-
-            // Update canvas dimensions to match container
-            canvas.setWidth(containerWidth);
-            canvas.setHeight(containerHeight);
-
-            // Update HTML element dimensions
-            canvasElement.width = containerWidth;
-            canvasElement.height = containerHeight;
-
-            // Update CSS dimensions
-            canvasElement.style.width = `${containerWidth}px`;
-            canvasElement.style.height = `${containerHeight}px`;
-
-            // Re-render the canvas
-            canvas.renderAll();
-        }
-    };
-
-    const resizeText = (newCanvas: Canvas) => (e: any) => {
-        const obj = e.target;
-        if (!obj || !(obj instanceof fabric.IText)) return;
-
-        const initialFontSize = obj.fontSize || 16;
-        const scale = (obj.scaleX + obj.scaleY) / 2;
-        const newFontSize = Math.max(4, initialFontSize * scale);
-
-        obj.set({
-            fontSize: newFontSize,
-            scaleX: 1,
-            scaleY: 1,
-            originX: 'center',
-            originY: 'center'
-        });
-
-        obj.setCoords();
-        newCanvas.renderAll();
-    };
-
-    const captureOriginal = (e: any) => {
-        const obj = e.target;
-        if (!obj || originalProps.current) return;
-
-        originalProps.current = {
-            left: obj.left,
-            top: obj.top,
-            scaleX: obj.scaleX,
-            scaleY: obj.scaleY,
-            angle: obj.angle,
-            skewX: obj.skewX,
-            skewY: obj.skewY,
-            originX: obj.originX,
-            originY: obj.originY,
-            flipX: obj.flipX,
-            flipY: obj.flipY,
-            fontSize: (obj as any).fontSize,
-            ...(obj instanceof fabric.IText && { fontSize: obj.fontSize }),
-        };
-    };
-
-    const commitTransform = (e: any) => {
-        const obj = e.target;
-        if (!obj || !originalProps.current) return;
-
-        const afterProps: Partial<fabric.Object> = {
-            left: obj.left,
-            top: obj.top,
-            scaleX: obj.scaleX,
-            scaleY: obj.scaleY,
-            angle: obj.angle,
-            skewX: obj.skewX,
-            skewY: obj.skewY,
-            originX: obj.originX,
-            originY: obj.originY,
-            flipX: obj.flipX,
-            flipY: obj.flipY,
-            fontSize: (obj as any).fontSize,
-            ...(obj instanceof fabric.IText && { fontSize: obj.fontSize }),
-        };
-
-        const command = new TransformObjectCommand(obj, originalProps.current, afterProps);
-
-        undoStack.current.push(command);
-        redoStack.current = [];
-        originalProps.current = null;
-
-        updateUndoRedoState();
-    };
+    }, [deleteObject, isHandlesInitialized, fixCanvasDimensions, resizeText, captureOriginal, commitTransform]);
 
     const addText = (text: string, fontSize: number, bold: boolean) => {
         if (!canvasRef.current) return;

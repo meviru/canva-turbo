@@ -1,61 +1,96 @@
 "use client";
 import { useCanvas } from "@/hooks/useCanvas";
+import type { Design, DesignerMode } from "@/shared/models";
 import { Canvas } from "fabric";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useMemo } from "react";
 
-const CanvasEditor = ({ designInfo, designerMode }: { designInfo: any, designerMode: any }) => {
-    const canvasRef = useRef<any>(null);
+interface CanvasEditorProps {
+    designInfo: Design | null;
+    designerMode: DesignerMode;
+}
+
+const CanvasEditor = ({ designInfo, designerMode }: CanvasEditorProps) => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
     const { canvas, setCanvas } = useCanvas();
+    const canvasInstanceRef = useRef<Canvas | null>(null);
 
-    // Initialize canvas
-    useEffect(() => {
-        if (canvasRef.current && designInfo) {
-            const initCanvas = new Canvas(canvasRef.current, {
-                width: designInfo?.width,
-                height: designInfo?.height,
-                backgroundColor: "#fff",
-            });
-
-            // Set High Resolution Canvas
-            const scaleFactor = window.devicePixelRatio || 1;
-            initCanvas.set({
-                width: designInfo?.width * scaleFactor,
-                height: designInfo?.height * scaleFactor,
-                scale: 1 / scaleFactor,
-            });
-
-            initCanvas.renderAll();
-            setCanvas(initCanvas);
-
-            return () => {
-                initCanvas.dispose();
-            }
-        }
+    // Memoize canvas configuration to prevent unnecessary recreations
+    const canvasConfig = useMemo(() => {
+        if (!designInfo) return null;
+        
+        const scaleFactor = window.devicePixelRatio || 1;
+        return {
+            width: designInfo.width * scaleFactor,
+            height: designInfo.height * scaleFactor,
+            scale: 1 / scaleFactor,
+            backgroundColor: designInfo.backgroundColor || "#fff",
+        };
     }, [designInfo]);
 
-    // Disable canvas interaction when designerMode is "Viewing" or "Commenting"
+    // Initialize canvas with proper cleanup
     useEffect(() => {
+        if (!canvasRef.current || !canvasConfig) return;
+
+        // Cleanup previous canvas instance
+        if (canvasInstanceRef.current) {
+            canvasInstanceRef.current.dispose();
+            canvasInstanceRef.current = null;
+        }
+
+        const initCanvas = new Canvas(canvasRef.current, {
+            width: canvasConfig.width,
+            height: canvasConfig.height,
+            backgroundColor: canvasConfig.backgroundColor,
+        });
+
+        // Set high resolution for sharp rendering
+        initCanvas.set({
+            scale: canvasConfig.scale,
+        });
+
+        initCanvas.renderAll();
+        canvasInstanceRef.current = initCanvas;
+        setCanvas(initCanvas);
+
+        // Cleanup function
+        return () => {
+            if (canvasInstanceRef.current) {
+                canvasInstanceRef.current.dispose();
+                canvasInstanceRef.current = null;
+            }
+        };
+    }, [canvasConfig, setCanvas]); // Add setCanvas back but ensure it's stable
+
+    // Memoize readonly state configuration using ref to avoid dependencies
+    const updateCanvasInteractivity = useCallback(() => {
         if (!canvas) return;
 
         const isReadOnly = designerMode.name === "Viewing" || designerMode.name === "Commenting";
 
-        // Disable canvas interaction
-        canvas.selection = !isReadOnly;
-        canvas.skipTargetFind = isReadOnly;
-        canvas.forEachObject((obj) => {
-            obj.selectable = !isReadOnly;
-            obj.evented = !isReadOnly;
-            obj.hasControls = !isReadOnly;
-            obj.lockMovementX = isReadOnly;
-            obj.lockMovementY = isReadOnly;
-            obj.lockScalingX = isReadOnly;
-            obj.lockScalingY = isReadOnly;
-            obj.lockRotation = isReadOnly;
+        // Batch canvas property updates
+        canvas.set({
+            selection: !isReadOnly,
+            skipTargetFind: isReadOnly,
         });
 
-        canvas.discardActiveObject();
-        canvas.requestRenderAll();
-    }, [designerMode, canvas]);
+        // Update all objects in batch
+        canvas.forEachObject((obj) => {
+            obj.set({
+                selectable: !isReadOnly,
+                evented: !isReadOnly,
+                hasControls: !isReadOnly,
+                lockMovementX: isReadOnly,
+                lockMovementY: isReadOnly,
+            });
+        });
+
+        canvas.renderAll();
+    }, [canvas, designerMode.name]); // Keep both dependencies but manage carefully
+
+    // Apply interactivity changes when mode or canvas changes
+    useEffect(() => {
+        updateCanvasInteractivity();
+    }, [designerMode.name, canvas]); // Simplified dependencies
 
     return (
         <div className="p-10 flex flex-col items-center justify-center min-h-full">
