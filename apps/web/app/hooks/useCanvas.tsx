@@ -1,24 +1,27 @@
 "use client";
 import { AddImageCommand } from "@/shared/commands/AddImageCommand";
 import { AddTextCommand } from "@/shared/commands/AddTextCommand";
+import { ClearCanvasCommand, ExportCanvasCommand, LoadCanvasCommand, SaveCanvasCommand } from "@/shared/commands/CanvasSerializationCommands";
 import { DeleteObjectCommand } from "@/shared/commands/DeleteObjectCommand";
 import { DeleteObjectsCommand } from "@/shared/commands/DeleteObjectsCommand";
 import { TransformObjectCommand } from "@/shared/commands/TransformObjectCommand";
 import { TransformObjectsCommand } from "@/shared/commands/TransformObjectsCommand";
 import { applyGlobalHandleStyles, createObjectWithGlobalHandles, initializeGlobalImageHandles } from "@/shared/lib/customControlRenderers";
 import { ExtendedCanvas } from "@/shared/lib/fabric-extended";
-import type { Command, FabricCanvas, FabricObject } from "@/shared/models";
+import type { FabricObject } from "@/shared/models";
+import { UndoManager, UndoManagerState } from "@/shared/undo/UndoManager";
+import { setCanvasReady, setUndoRedoState } from "@/store/slices/canvasSlice";
 import * as fabric from "fabric";
 import { Canvas } from "fabric";
 import {
     createContext,
-    useCallback, 
+    useCallback,
     useContext,
     useEffect,
     useRef,
-    useState,
-    useMemo
+    useState
 } from "react";
+import { useAppDispatch, useCanvasState } from "./useRedux";
 
 type CanvasContextType = {
     canvas: ExtendedCanvas | null;
@@ -30,6 +33,11 @@ type CanvasContextType = {
     redo: () => void;
     canUndo: boolean;
     canRedo: boolean;
+    // Serialization methods
+    saveCanvas: () => Promise<string>;
+    loadCanvas: (jsonData: string) => Promise<void>;
+    exportCanvas: (format?: 'png' | 'jpeg' | 'svg', quality?: number) => Promise<string>;
+    clearCanvas: () => Promise<void>;
 };
 
 const CanvasContext = createContext<CanvasContextType | undefined>(undefined);
@@ -37,13 +45,33 @@ const CanvasContext = createContext<CanvasContextType | undefined>(undefined);
 export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
     const [canvas, setCanvasState] = useState<Canvas | null>(null);
     const canvasRef = useRef<Canvas | null>(null);
-    const undoStack = useRef<Command[]>([]);
-    const redoStack = useRef<Command[]>([]);
-    const [canUndo, setCanUndo] = useState(false);
-    const [canRedo, setCanRedo] = useState(false);
+    const undoManagerRef = useRef<UndoManager | null>(null);
     const originalProps = useRef<Partial<FabricObject> | null>(null);
     const groupOriginalProps = useRef<Partial<FabricObject>[]>([]);
     const [isHandlesInitialized, setIsHandlesInitialized] = useState(false);
+    
+    // Redux integration
+    const dispatch = useAppDispatch();
+    const canvasState = useCanvasState();
+
+    // Initialize UndoManager
+    useEffect(() => {
+        if (!undoManagerRef.current) {
+            undoManagerRef.current = new UndoManager({
+                maxHistorySize: 50,
+                enablePersistence: false,
+            });
+            
+            // Subscribe to undo manager state changes
+            undoManagerRef.current.subscribe((state: UndoManagerState) => {
+                dispatch(setUndoRedoState({
+                    canUndo: state.canUndo,
+                    canRedo: state.canRedo,
+                    historySize: state.historySize,
+                }));
+            });
+        }
+    }, [dispatch]);
 
     // Initialize global image handles once when component mounts
     useEffect(() => {
@@ -70,28 +98,17 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         };
     }, []); // Remove isHandlesInitialized from dependencies
 
-    const updateUndoRedoState = () => {
-        setCanUndo(undoStack.current.length > 0);
-        setCanRedo(redoStack.current.length > 0);
-    };
-
-    const deleteObject = useCallback((obj: fabric.Object) => {
-        if (!canvasRef.current) return;
+    const deleteObject = useCallback(async (obj: fabric.Object) => {
+        if (!canvasRef.current || !undoManagerRef.current) return;
 
         // If the object is an active selection, delete all contained objects
         if (obj && obj.type === 'activeSelection' && (obj as any)._objects) {
             const objects = (obj as any)._objects.slice();
             const command = new DeleteObjectsCommand(canvasRef.current, objects);
-            command.execute();
-            undoStack.current.push(command);
-            redoStack.current = [];
-            updateUndoRedoState();
+            await undoManagerRef.current.execute(command);
         } else {
             const command = new DeleteObjectCommand(canvasRef.current, obj);
-            command.execute();
-            undoStack.current.push(command);
-            redoStack.current = [];
-            updateUndoRedoState();
+            await undoManagerRef.current.execute(command);
         }
     }, []);
 
@@ -195,10 +212,12 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
                 ...(o instanceof fabric.IText && { fontSize: o.fontSize }),
             }));
             const command = new TransformObjectsCommand(canvasRef.current!, objects, groupOriginalProps.current.slice(), afterStates);
-            undoStack.current.push(command);
-            redoStack.current = [];
+            if (undoManagerRef.current) {
+                undoManagerRef.current.execute(command).catch(error => {
+                    console.error('Failed to execute group transform command:', error);
+                });
+            }
             groupOriginalProps.current = [];
-            updateUndoRedoState();
             return;
         }
 
@@ -221,12 +240,13 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         };
 
         const command = new TransformObjectCommand(obj, originalProps.current, afterProps);
-
-        undoStack.current.push(command);
-        redoStack.current = [];
+        
+        if (undoManagerRef.current) {
+            undoManagerRef.current.execute(command).catch(error => {
+                console.error('Failed to execute transform command:', error);
+            });
+        }
         originalProps.current = null;
-
-        updateUndoRedoState();
     }, []);
 
     const setCanvas = useCallback((newCanvas: Canvas) => {
@@ -263,30 +283,23 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
                 createObjectWithGlobalHandles(obj);
             }
         });
+        
+        // Mark canvas as ready
+        dispatch(setCanvasReady(true));
+    }, [deleteObject, isHandlesInitialized, fixCanvasDimensions, resizeText, captureOriginal, commitTransform, dispatch]);
 
-        updateUndoRedoState();
-    }, [deleteObject, isHandlesInitialized, fixCanvasDimensions, resizeText, captureOriginal, commitTransform]);
-
-    const addText = (text: string, fontSize: number, bold: boolean) => {
-        if (!canvasRef.current) return;
+    const addText = useCallback(async (text: string, fontSize: number, bold: boolean) => {
+        if (!canvasRef.current || !undoManagerRef.current) return;
 
         const command = new AddTextCommand(canvasRef.current, text, fontSize, bold);
-        command.execute();
-
-        undoStack.current.push(command);
-        redoStack.current = [];
-        updateUndoRedoState();
-    };
+        await undoManagerRef.current.execute(command);
+    }, []);
 
     const addImage = async (imageUrl: string) => {
-        if (!canvas) return;
+        if (!canvas || !undoManagerRef.current) return;
 
         const command = new AddImageCommand(canvas, imageUrl);
-        await command.execute();
-
-        undoStack.current.push(command);
-        redoStack.current = [];
-        updateUndoRedoState();
+        await undoManagerRef.current.execute(command);
     };
 
     const restoreSelection = useCallback(() => {
@@ -296,13 +309,11 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         canvasRef.current.renderAll();
     }, []);
 
-    const undo = useCallback(() => {
-        const cmd = undoStack.current.pop();
-        if (cmd) {
-            // Force a small delay to ensure canvas state is properly updated
-            cmd.undo();
-            redoStack.current.push(cmd);
-            updateUndoRedoState();
+    const undo = useCallback(async () => {
+        if (!undoManagerRef.current) return;
+        
+        try {
+            await undoManagerRef.current.undo();
             
             // Additional delay for complex selection restoration
             setTimeout(() => {
@@ -310,16 +321,16 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
                     canvasRef.current.renderAll();
                 }
             }, 10);
+        } catch (error) {
+            console.error('Failed to undo:', error);
         }
     }, []);
 
-    const redo = useCallback(() => {
-        const cmd = redoStack.current.pop();
-        if (cmd) {
-            // Force a small delay to ensure canvas state is properly updated
-            cmd.execute();
-            undoStack.current.push(cmd);
-            updateUndoRedoState();
+    const redo = useCallback(async () => {
+        if (!undoManagerRef.current) return;
+        
+        try {
+            await undoManagerRef.current.redo();
             
             // Additional delay for complex selection restoration
             setTimeout(() => {
@@ -327,8 +338,44 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
                     canvasRef.current.renderAll();
                 }
             }, 10);
+        } catch (error) {
+            console.error('Failed to redo:', error);
         }
     }, []);
+
+    // Serialization methods
+    const saveCanvas = useCallback(async (): Promise<string> => {
+        if (!canvas || !undoManagerRef.current) return '';
+        
+        const command = new SaveCanvasCommand(canvas);
+        await undoManagerRef.current.execute(command);
+        return command.getSavedData() || '';
+    }, [canvas]);
+
+    const loadCanvas = useCallback(async (jsonData: string): Promise<void> => {
+        if (!canvas || !undoManagerRef.current) return;
+        
+        const command = new LoadCanvasCommand(canvas, jsonData);
+        await undoManagerRef.current.execute(command);
+    }, [canvas]);
+
+    const exportCanvas = useCallback(async (
+        format: 'png' | 'jpeg' | 'svg' = 'png',
+        quality: number = 1
+    ): Promise<string> => {
+        if (!canvas) return '';
+        
+        const command = new ExportCanvasCommand(canvas, { format, quality });
+        await command.execute();
+        return command.getExportedData() || '';
+    }, [canvas]);
+
+    const clearCanvas = useCallback(async (): Promise<void> => {
+        if (!canvas || !undoManagerRef.current) return;
+        
+        const command = new ClearCanvasCommand(canvas);
+        await undoManagerRef.current.execute(command);
+    }, [canvas]);
 
     return (
         <CanvasContext.Provider
@@ -340,8 +387,12 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
                 deleteObject,
                 undo,
                 redo,
-                canUndo,
-                canRedo,
+                canUndo: canvasState.canUndo,
+                canRedo: canvasState.canRedo,
+                saveCanvas,
+                loadCanvas,
+                exportCanvas,
+                clearCanvas,
             }}
         >
             {children}
