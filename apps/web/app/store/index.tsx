@@ -5,12 +5,14 @@ import { photosService } from "@/services/photos.service";
 import { uploadService } from "@/services/upload.service";
 import { userService } from "@/services/user.service";
 import userSlice from "@/store/slices/userSlice";
+import canvasSlice from "@/store/slices/canvasSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 
 export const store = configureStore({
   reducer: {
     user: userSlice,
+    canvas: canvasSlice,
     [designService.reducerPath]: designService.reducer,
     [userService.reducerPath]: userService.reducer,
     [photosService.reducerPath]: photosService.reducer,
@@ -28,6 +30,10 @@ export const store = configureStore({
 export function StoreProvider({ children }: { children: React.ReactNode }) {
   return <Provider store={store}>{children}</Provider>;
 }
+
+// Export types for use with TypeScript
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
