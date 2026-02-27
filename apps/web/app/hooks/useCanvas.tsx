@@ -154,7 +154,9 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         const obj = e.target;
         if (!obj) return;
         if (obj.type === 'activeSelection' && (obj as any)._objects) {
-            // Capture all objects' original props
+            if (groupOriginalProps.current.length) return;
+
+            // Capture all objects' original props once per transform interaction
             groupOriginalProps.current = (obj as any)._objects.map((o: any) => ({
                 left: o.left,
                 top: o.top,
@@ -257,6 +259,8 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
 
         canvasRef.current = newCanvas;
         setCanvasState(newCanvas);
+        originalProps.current = null;
+        groupOriginalProps.current = [];
 
         // Apply global canvas selection styles
         newCanvas.selectionColor = 'rgba(139, 61, 255, 0.1)';
@@ -302,12 +306,6 @@ export const CanvasProvider = ({ children }: { children: React.ReactNode }) => {
         await undoManagerRef.current.execute(command);
     };
 
-    const restoreSelection = useCallback(() => {
-        if (!canvasRef.current) return;
-        // For now, just discard selection and render. Can be extended to restore previous selection state.
-        canvasRef.current.discardActiveObject();
-        canvasRef.current.renderAll();
-    }, []);
 
     const undo = useCallback(async () => {
         if (!undoManagerRef.current) return;
